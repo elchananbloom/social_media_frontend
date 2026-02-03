@@ -1,3 +1,3 @@
 
-const base_url: string = "http://localhost:8080";
-export default base_url;
+const base_url_auth: string = "http://localhost:9000";
+export default base_url_auth;
