@@ -40,6 +40,8 @@ export interface CommentResponse {
 
 export interface CreateCommentRequest {
   content: string;
+}
+
 export type Profile = {
   id: number;
   username: string;
