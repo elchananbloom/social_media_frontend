@@ -46,26 +46,34 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     };
 
     const login = async (name: string, password: string) => {
-        try {
-            const response = await axios.post('/users/login', { username: name, password });
-            const token = response.data?.token;
-            console.log(response.data.token);
-            if (token) {
-                localStorage.setItem('token', token);
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            }
-            // set minimal user info (backend doesn't return full user here). Adjust to fetch current user if API provides.
-            const minimalUser: User = { username: name, password: '' };
-            setUser(minimalUser);
-            navigate('/');
-            return token;
-        } catch (error: any) {
-            if (error.response && error.response.data) {
-                throw error.response.data;
-            }
-            throw error;
-        }
-    };
+  try {
+    const response = await axios.post("/users/login", { username: name, password });
+
+    const raw = response.data;
+    const token =
+      raw?.token ||
+      raw?.accessToken ||
+      raw?.access_token ||
+      (typeof raw === "string" ? raw : null);
+
+    console.log("login response:", raw);
+    console.log("token extracted:", token);
+
+    if (!token || typeof token !== "string") {
+      throw new Error("Login succeeded but no token string was returned");
+    }
+
+    localStorage.setItem("token", token);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    setUser({ username: name, password: "" });
+    navigate("/posts");
+    return token;
+  } catch (error: any) {
+    if (error.response && error.response.data) throw error.response.data;
+    throw error;
+  }
+};
 
     const logout = () => {
         setUser(null);
