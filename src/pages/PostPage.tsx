@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { PostResponse } from "../utils/types";
-import { createPost, deletePost, listPosts } from "../utils/PostApi";
+import { createPost, deletePost, getPostById, listPosts } from "../utils/PostApi";
 
 import CreatePostForm from "../components/posts/CreatePostForm";
 import PostList from "../components/posts/PostList";
@@ -11,7 +11,8 @@ export default function PostPage() {
   const [posts, setPosts] = useState<PostResponse[]>([]);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
-  
+  const [selectedPost, setSelectedPost] = useState<PostResponse | null>(null);
+
   const [focusComment, setFocusComment] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -24,9 +25,17 @@ export default function PostPage() {
     try {
       setError(null);
       setLoading(true);
+
       const data = await listPosts({ limit: 50 });
       setPosts(data);
-      if (data.length && selectedPostId == null) setSelectedPostId(data[0].id);
+
+      if (data.length && selectedPostId == null) {
+        const firstId = data[0].id;
+        setSelectedPostId(firstId);
+
+        const full = await getPostById(firstId);
+        setSelectedPost(full);
+      }
     } catch (e: any) {
       setError(e?.response?.data?.message || "Failed to load posts");
     } finally {
@@ -44,16 +53,52 @@ export default function PostPage() {
     await loadPosts();
   };
 
-  
-  const handleSelect = (id: number) => {
-    setSelectedPostId(id);
-    setFocusComment(false);
+  const handleSelect = async (id: number) => {
+    try {
+      setError(null);
+      setSelectedPostId(id);
+      setFocusComment(false);
+
+      const full = await getPostById(id);
+      setSelectedPost(full);
+    } catch (e: any) {
+      setError(e?.response?.data?.message || "Failed to load post detail");
+      setSelectedPost(null);
+    }
   };
 
-  
-  const handleCommentFromFeed = (id: number) => {
-    setSelectedPostId(id);
-    setFocusComment(true);
+  const handleCommentFromFeed = async (id: number) => {
+    try {
+      setError(null);
+      setSelectedPostId(id);
+      setFocusComment(true);
+
+      const full = await getPostById(id);
+      setSelectedPost(full);
+    } catch (e: any) {
+      setError(e?.response?.data?.message || "Failed to load post detail");
+      setSelectedPost(null);
+    }
+  };
+
+  // ✅ NEW: refresh one post (detail + feed) after comment is added
+  const refreshPostCounts = async (postId: number) => {
+    try {
+      const full = await getPostById(postId);
+
+      // update detail panel if it's the same post
+      setSelectedPost((prev) => (prev && prev.id === postId ? full : prev));
+
+      // update feed list so PostCard shows updated count
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === postId ? { ...p, commentCount: full.commentCount } : p
+        )
+      );
+    } catch (e) {
+      // keep UI working even if refresh fails
+      console.warn("Failed to refresh post counts", e);
+    }
   };
 
   const handleDelete = async (id: number) => {
@@ -66,7 +111,18 @@ export default function PostPage() {
 
         setSelectedPostId((currentSelected) => {
           if (currentSelected !== id) return currentSelected;
-          return next.length ? next[0].id : null;
+
+          const nextId = next.length ? next[0].id : null;
+
+          if (nextId == null) {
+            setSelectedPost(null);
+          } else {
+            getPostById(nextId)
+              .then((full) => setSelectedPost(full))
+              .catch(() => setSelectedPost(null));
+          }
+
+          return nextId;
         });
 
         return next;
@@ -80,8 +136,6 @@ export default function PostPage() {
     }
   };
 
-  const selectedPost = posts.find((p) => p.id === selectedPostId) || null;
-
   return (
     <div style={{ maxWidth: 1000, margin: "24px auto", padding: 16 }}>
       <h1>Post Service</h1>
@@ -91,20 +145,29 @@ export default function PostPage() {
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 16,
+          marginTop: 16,
+        }}
+      >
         <PostList
           posts={posts}
           selectedPostId={selectedPostId}
           onSelect={handleSelect}
           onDelete={handleDelete}
           currentUsername={currentUsername}
-          onComment={handleCommentFromFeed}  
+          onComment={handleCommentFromFeed}
         />
 
-        <PostDetail 
-        post={selectedPost} 
-        focusComment={focusComment} 
-        onFocused={() => setFocusComment(false)}/> 
+        <PostDetail
+          post={selectedPost}
+          focusComment={focusComment}
+          onFocused={() => setFocusComment(false)}
+          onCommentCreated={refreshPostCounts} 
+        />
       </div>
     </div>
   );

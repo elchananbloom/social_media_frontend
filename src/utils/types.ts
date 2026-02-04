@@ -18,24 +18,26 @@ export interface PostResponse {
   authorUsername: string;
   content: string;
   imageUrl?: string | null;
-  createdAt: string; // Instant -> ISO string
+  createdAt: string;
+  commentCount: number
 }
 
-// Matches CreatePostRequest.java
+
 export interface CreatePostRequest {
   content: string;
   imageUrl?: string;
 }
 
-// Matches CommentResponse.java exactly
+
 export interface CommentResponse {
   id: number;
+  postId: number;
   authorUsername: string;
   content: string;
-  createdAt: string; // Instant -> ISO string
+  createdAt: string; 
 }
 
-// Matches CreateCommentRequest.java
+
 export interface CreateCommentRequest {
   content: string;
 }

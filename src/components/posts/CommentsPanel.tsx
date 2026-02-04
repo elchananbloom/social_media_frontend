@@ -5,9 +5,14 @@ import { addComment, listComments } from "../../utils/PostApi";
 type CommentsPanelProps = {
   postId: number;
   inputRef?: RefObject<HTMLInputElement | null>;
+  onCommentCreated?: (postId: number) => Promise<void> | void; 
 };
 
-export default function CommentsPanel({ postId, inputRef }: CommentsPanelProps) {
+export default function CommentsPanel({
+  postId,
+  inputRef,
+  onCommentCreated,
+}: CommentsPanelProps) {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [content, setContent] = useState("");
   const [open, setOpen] = useState(false);
@@ -40,10 +45,15 @@ export default function CommentsPanel({ postId, inputRef }: CommentsPanelProps) 
     try {
       setError(null);
       setPosting(true);
+
       const created = await addComment(postId, { content: content.trim() });
+
       setComments((prev) => [created, ...prev]);
+
       setContent("");
       setOpen(true);
+
+      await onCommentCreated?.(postId);
     } catch (e: any) {
       setError(e?.response?.data?.message || "Failed to add comment");
     } finally {
@@ -78,7 +88,10 @@ export default function CommentsPanel({ postId, inputRef }: CommentsPanelProps) 
           {!loading && comments.length === 0 && <p>No comments yet.</p>}
 
           {comments.map((c) => (
-            <div key={c.id} style={{ borderTop: "1px solid #f1f1f1", marginTop: 10, paddingTop: 10 }}>
+            <div
+              key={c.id}
+              style={{ borderTop: "1px solid #f1f1f1", marginTop: 10, paddingTop: 10 }}
+            >
               <div>{c.content}</div>
               <small style={{ color: "#666" }}>
                 {c.authorUsername} · {new Date(c.createdAt).toLocaleString()}

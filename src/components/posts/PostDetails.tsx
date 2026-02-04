@@ -6,10 +6,12 @@ export default function PostDetail({
   post,
   focusComment,
   onFocused,
+  onCommentCreated, 
 }: {
   post: PostResponse | null;
   focusComment: boolean;
   onFocused: () => void;
+  onCommentCreated?: (postId: number) => Promise<void> | void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -31,7 +33,15 @@ export default function PostDetail({
         Author: {post.authorUsername} · {new Date(post.createdAt).toLocaleString()}
       </small>
 
-      <CommentsPanel postId={post.id} inputRef={inputRef} />
+      <div style={{ marginTop: 8, color: "#666", fontSize: 12 }}>
+        Comments: <b>{post.commentCount ?? 0}</b>
+      </div>
+
+      <CommentsPanel
+        postId={post.id}
+        inputRef={inputRef}
+        onCommentCreated={onCommentCreated} 
+      />
     </div>
   );
 }
