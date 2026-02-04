@@ -31,10 +31,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     const signup = async (username: string, email: string, password: string) => {
         try {
             const response = await axios.post('http://localhost:9000/api/users/register', { username, email, password });
-            console.log(response.data);
-            // backend returns created user object (no token). Save user and navigate.
-            setUser(response.data);
-            navigate('/');
+            console.log("Registration successful:", response.data);
+
+            // Redirect to login page after successful signup
+            navigate('/login');
             return response.data;
         } catch (error: any) {
             // normalize and rethrow backend payload if present so UI can read errorMessage / suggestionNames
@@ -57,7 +57,27 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
             // set minimal user info (backend doesn't return full user here). Adjust to fetch current user if API provides.
             const minimalUser: User = { username: name, password: '' };
             setUser(minimalUser);
-            navigate('/');
+
+            // Check if user has a profile
+            try {
+                const profileResponse = await axios.get(`http://localhost:8082/profiles/${name}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("User has profile:", profileResponse.data);
+                navigate('/');
+            } catch (profileError: any) {
+                // Backend returns 500 instead of 404 for missing profiles
+                if (profileError.response?.status === 404 || profileError.response?.status === 500) {
+                    console.log("User doesn't have a profile, redirecting to create-profile");
+                    navigate('/create-profile');
+                } else {
+                    console.error("Error checking profile:", profileError);
+                    navigate('/');
+                }
+            }
+
             return token;
         } catch (error: any) {
             if (error.response && error.response.data) {
