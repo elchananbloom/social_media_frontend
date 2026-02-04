@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import RequiredAuth from './components/RequiredAuth';
 import AuthProvider from './providers/AuthProvider';
 import ProfilePage from './components/ProfilePage';
