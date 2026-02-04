@@ -14,3 +14,16 @@ export type AuthContextValue = {
   login: (name: string, password: string) => Promise<void>;
   logout: () => void;
 }
+
+export type Profile = {
+  id: number;
+  username: string;
+    aboutMe?: string;
+    displayName?: string;
+    profilePictureUrl?: string;
+    location?: string;
+    birthdate?: string;
+    gender?: string;
+    secondaryImageUrl?: string;
+    phoneNumber?: string;
+}
