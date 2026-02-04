@@ -4,6 +4,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import RequiredAuth from './components/RequiredAuth';
 import AuthProvider from './providers/AuthProvider';
 import ProfilePage from './components/ProfilePage';
+import Login from "./components/Login";
+import Register from "./components/Register";
 
 function App() {
   return (
@@ -11,8 +13,8 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/login" element={<h1>Login Page</h1>} />
-          <Route path="/signup" element={<h1>Signup Page</h1>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Register />} />
           <Route element={<RequiredAuth />}>
             <Route path="/" element={<h1>Home Page - Protected</h1>} />
             <Route path="/posts/:id" element={<h1>Post Detail Page - Protected</h1>} />
@@ -29,15 +31,13 @@ function App() {
               <Route path=':username/followers' element={<h1>Other User Followers Page - Protected</h1>} />
               <Route path=':username/following' element={<h1>Other User Following Page - Protected</h1>} />
             </Route>
-
-
-          </Route>
-
-
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
-  );
+           </Route>
+                    {/* default / unknown -> show login first */}
+                    <Route path="*" element={<Navigate to="/login" replace />} />
+                </Routes>
+            </AuthProvider>
+        </BrowserRouter>
+    );
 }
 
 export default App;
