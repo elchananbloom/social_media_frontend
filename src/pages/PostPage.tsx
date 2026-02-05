@@ -6,6 +6,7 @@ import CreatePostForm from "../components/posts/CreatePostForm";
 import PostList from "../components/posts/PostList";
 import PostDetail from "../components/posts/PostDetails";
 import { useAuth } from "../hooks/useAuth";
+import { likePost, unlikePost } from "../api/likesApi";
 
 export default function PostPage() {
   const [posts, setPosts] = useState<PostResponse[]>([]);
@@ -80,6 +81,38 @@ export default function PostPage() {
       setSelectedPost(null);
     }
   };
+
+  const toggleLike = async (postId: number) => {
+    if (!user) return;
+
+    setPosts((prev) =>
+      prev.map((p) => {
+        if (p.id !== postId) return p;
+
+        const liked = p.isLikedByCurrentUser;
+
+        return {
+          ...p,
+        isLikedByCurrentUser: !liked,
+        likesCount: liked ? p.likesCount - 1 : p.likesCount + 1,
+      };
+    })
+  );
+
+    try {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      if (post.isLikedByCurrentUser) {
+        await unlikePost(postId, user.username);
+      } else {
+        await likePost(postId, user.username);
+      }
+    } catch (err) {
+      console.error("Failed to toggle like", err);
+    }
+  };
+
 
   // ✅ NEW: refresh one post (detail + feed) after comment is added
   const refreshPostCounts = async (postId: number) => {
@@ -160,6 +193,7 @@ export default function PostPage() {
           onDelete={handleDelete}
           currentUsername={currentUsername}
           onComment={handleCommentFromFeed}
+          onToggleLike={toggleLike}
         />
 
         <PostDetail
