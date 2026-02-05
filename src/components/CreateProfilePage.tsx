@@ -36,7 +36,7 @@ const CreateProfilePage = () => {
         setError("");
 
         try {
-            const base_url = "http://localhost:8082";
+            const base_url = "http://localhost:8084";
             const token = localStorage.getItem('token');
 
             const submitData = {
