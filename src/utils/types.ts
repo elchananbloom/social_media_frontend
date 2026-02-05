@@ -19,7 +19,7 @@ export interface PostResponse {
   content: string;
   imageUrl?: string | null;
   createdAt: string;
-  commentCount?: number;
+  commentCount: number;
 }
 
 
