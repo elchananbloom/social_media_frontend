@@ -20,6 +20,8 @@ export interface PostResponse {
   imageUrl?: string | null;
   createdAt: string;
   commentCount: number;
+  likesCount: number;
+  isLikedByCurrentUser: boolean;
 }
 
 
