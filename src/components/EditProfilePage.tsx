@@ -36,7 +36,7 @@ const EditProfilePage = () => {
                 return;
             }
             try {
-                const base_url = "http://localhost:8082";
+                const base_url = "http://localhost:8084";
                 const token = localStorage.getItem('token');
                 const response = await axios.get(`${base_url}/profiles/${user.username}`, {
                     headers: {
