@@ -1,8 +1,8 @@
-// src/components/Register.tsx
 import React, { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import "./Register.css";
 
 type RegisterFormValues = {
     username: string;
@@ -47,68 +47,68 @@ export default function Register() {
     });
 
     return (
-        <div style={{ maxWidth: 420, margin: "0 auto" }}>
-            <h2>Sign up</h2>
-            <form onSubmit={formik.handleSubmit} noValidate>
-                <div style={{ marginBottom: 8 }}>
-                    <label>Username</label>
+        <div className="register-container">
+            <h2 className="register-title">Sign up for Twitter</h2>
+            <form onSubmit={formik.handleSubmit} noValidate className="register-form">
+                <div className="form-group">
+                    <label className="form-label">Username</label>
                     <input
                         name="username"
                         value={formik.values.username}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        style={{ width: "100%" }}
+                        className="form-input"
                     />
                     {formik.touched.username && formik.errors.username && (
-                        <div style={{ color: "red" }}>{formik.errors.username}</div>
+                        <div className="error-message">{formik.errors.username}</div>
                     )}
                 </div>
 
-                <div style={{ marginBottom: 8 }}>
-                    <label>Email</label>
+                <div className="form-group">
+                    <label className="form-label">Email</label>
                     <input
                         name="email"
                         type="email"
                         value={formik.values.email}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        style={{ width: "100%" }}
+                        className="form-input"
                     />
                     {formik.touched.email && formik.errors.email && (
-                        <div style={{ color: "red" }}>{formik.errors.email}</div>
+                        <div className="error-message">{formik.errors.email}</div>
                     )}
                 </div>
 
-                <div style={{ marginBottom: 8 }}>
-                    <label>Password</label>
+                <div className="form-group">
+                    <label className="form-label">Password</label>
                     <input
                         name="password"
                         type="password"
                         value={formik.values.password}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        style={{ width: "100%" }}
+                        className="form-input"
                     />
                     {formik.touched.password && formik.errors.password && (
-                        <div style={{ color: "red" }}>{formik.errors.password}</div>
+                        <div className="error-message">{formik.errors.password}</div>
                     )}
                 </div>
 
-                <button type="submit" disabled={formik.isSubmitting}>
+                <button type="submit" disabled={formik.isSubmitting} className="submit-button">
                     Register
                 </button>
             </form>
 
-            {serverError && <div style={{ color: "red", marginTop: 12 }}>{serverError}</div>}
+            {serverError && <div className="server-error">{serverError}</div>}
 
             {suggestions.length > 0 && (
-                <div style={{ marginTop: 12 }}>
-                    <div>Suggestions:</div>
-                    <ul>
+                <div className="suggestions-container">
+                    <div className="suggestions-title">Suggestions:</div>
+                    <ul className="suggestions-list">
                         {suggestions.map((s) => (
-                            <li key={s}>
+                            <li key={s} className="suggestion-item">
                                 <button
-                                    style={{ background: "none", border: "none", color: "blue", cursor: "pointer" }}
+                                    className="suggestion-button"
                                     onClick={() => {
                                         formik.setFieldValue("username", s);
                                         setSuggestions([]);

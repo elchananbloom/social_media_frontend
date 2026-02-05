@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import axios from "axios";
+import "./CreateProfilePage.css";
 
 const CreateProfilePage = () => {
     const { user } = useAuth();
@@ -68,15 +69,15 @@ const CreateProfilePage = () => {
     };
 
     return (
-        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-            <h1>Create Your Profile</h1>
-            <p>Welcome! Let's set up your profile.</p>
+        <div className="create-profile-container">
+            <h1 className="create-profile-title">Create Your Profile</h1>
+            <p className="create-profile-subtitle">Welcome! Let's set up your profile.</p>
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && <p className="profile-error">{error}</p>}
 
-            <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: "15px" }}>
-                    <label htmlFor="displayName">Display Name: *</label>
+            <form onSubmit={handleSubmit} className="create-profile-form">
+                <div className="profile-form-group">
+                    <label htmlFor="displayName" className="profile-label">Display Name: *</label>
                     <input
                         type="text"
                         id="displayName"
@@ -84,69 +85,69 @@ const CreateProfilePage = () => {
                         value={formData.displayName}
                         onChange={handleChange}
                         required
-                        style={{ width: "100%", padding: "8px" }}
+                        className="profile-input"
                     />
                 </div>
 
-                <div style={{ marginBottom: "15px" }}>
-                    <label htmlFor="profilePictureUrl">Profile Picture URL:</label>
+                <div className="profile-form-group">
+                    <label htmlFor="profilePictureUrl" className="profile-label">Profile Picture URL:</label>
                     <input
                         type="text"
                         id="profilePictureUrl"
                         name="profilePictureUrl"
                         value={formData.profilePictureUrl}
                         onChange={handleChange}
-                        style={{ width: "100%", padding: "8px" }}
+                        className="profile-input"
                     />
                     {formData.profilePictureUrl && (
-                        <img src={formData.profilePictureUrl} alt="Profile preview" style={{ maxWidth: "200px", marginTop: "10px" }} />
+                        <img src={formData.profilePictureUrl} alt="Profile preview" className="profile-preview-image" />
                     )}
                 </div>
 
-                <div style={{ marginBottom: "15px" }}>
-                    <label htmlFor="aboutMe">About Me:</label>
+                <div className="profile-form-group">
+                    <label htmlFor="aboutMe" className="profile-label">About Me:</label>
                     <textarea
                         id="aboutMe"
                         name="aboutMe"
                         value={formData.aboutMe}
                         onChange={handleChange}
                         rows={4}
-                        style={{ width: "100%", padding: "8px" }}
+                        className="profile-textarea"
                     />
                 </div>
 
-                <div style={{ marginBottom: "15px" }}>
-                    <label htmlFor="location">Location:</label>
+                <div className="profile-form-group">
+                    <label htmlFor="location" className="profile-label">Location:</label>
                     <input
                         type="text"
                         id="location"
                         name="location"
                         value={formData.location}
                         onChange={handleChange}
-                        style={{ width: "100%", padding: "8px" }}
+                        className="profile-input"
                     />
                 </div>
 
-                <div style={{ marginBottom: "15px" }}>
-                    <label htmlFor="birthdate">Birthdate:</label>
+                <div className="profile-form-group">
+                    <label htmlFor="birthdate" className="profile-label">Birthdate:</label>
                     <input
                         type="date"
                         id="birthdate"
                         name="birthdate"
                         value={formData.birthdate}
                         onChange={handleChange}
-                        style={{ width: "100%", padding: "8px" }}
+                        className="profile-input"
                     />
                 </div>
 
-                <div style={{ marginBottom: "15px" }}>
-                    <label htmlFor="gender">Gender:</label>
+                <div className="profile-form-group">
+                    <label htmlFor="gender" className="profile-label">Gender:</label>
                     <select
                         id="gender"
                         name="gender"
                         value={formData.gender}
                         onChange={handleChange}
-                        style={{ width: "100%", padding: "8px" }}
+                        className="profile-select"
                     >
                         <option value="">Select...</option>
                         <option value="male">Male</option>
@@ -156,19 +157,19 @@ const CreateProfilePage = () => {
                     </select>
                 </div>
 
-                <div style={{ marginBottom: "15px" }}>
-                    <label htmlFor="phoneNumber">Phone Number:</label>
+                <div className="profile-form-group">
+                    <label htmlFor="phoneNumber" className="profile-label">Phone Number:</label>
                     <input
                         type="tel"
                         id="phoneNumber"
                         name="phoneNumber"
                         value={formData.phoneNumber}
                         onChange={handleChange}
-                        style={{ width: "100%", padding: "8px" }}
+                        className="profile-input"
                     />
                 </div>
 
-                <button type="submit" disabled={isSubmitting} style={{ padding: "10px 20px", marginRight: "10px" }}>
+                <button type="submit" disabled={isSubmitting} className="create-profile-submit">
                     {isSubmitting ? "Creating..." : "Create Profile"}
                 </button>
             </form>
