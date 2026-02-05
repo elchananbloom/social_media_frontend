@@ -75,7 +75,7 @@ const ProfilePage = () => {
         return;
       }
       try {
-        const base_url = "http://localhost:8082";
+        const base_url = "http://localhost:8084";
         const response = await axios.get(`${base_url}/profiles/${usernameToFetch}`,
           {
             headers: {
