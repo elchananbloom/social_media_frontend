@@ -21,6 +21,8 @@ export default function PostPage() {
   const { user } = useAuth();
   const currentUsername = user?.username ?? null;
 
+
+
   const loadPosts = async () => {
     try {
       setError(null);
