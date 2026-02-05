@@ -1,47 +1,64 @@
 import { useEffect, useState } from "react";
 import { PostResponse } from "../utils/types";
 import { createPost, deletePost, getPostById, listPosts } from "../utils/PostApi";
+import { useAuth } from "../hooks/useAuth";
+import { getLikesForPost, likePost, unlikePost } from "../api/likesApi";
 
 import CreatePostForm from "../components/posts/CreatePostForm";
 import PostList from "../components/posts/PostList";
 import PostDetail from "../components/posts/PostDetails";
-import { useAuth } from "../hooks/useAuth";
-import "./PostPage.css";
-import { likePost, unlikePost } from "../api/likesApi";
 
 export default function PostPage() {
-  const [posts, setPosts] = useState<PostResponse[]>([]);
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
-
-  const [selectedPost, setSelectedPost] = useState<PostResponse | null>(null);
-
-  const [focusComment, setFocusComment] = useState(false);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   const { user } = useAuth();
   const currentUsername = user?.username ?? null;
 
+  const [posts, setPosts] = useState<PostResponse[]>([]);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [selectedPost, setSelectedPost] = useState<PostResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  // likesMap stores likes info separately from PostResponse
+  const [likesMap, setLikesMap] = useState<{
+    [postId: number]: { count: number; likedByCurrentUser: boolean };
+  }>({});
 
   const loadPosts = async () => {
     try {
-      setError(null);
       setLoading(true);
+      setError(null);
 
       const data = await listPosts({ limit: 50 });
       setPosts(data);
 
+      // Fetch likes for each post
+      const likesData = await Promise.all(
+        data.map(async (p) => {
+          const likes = await getLikesForPost(p.id);
+          return {
+            postId: p.id,
+            count: likes.length,
+            likedByCurrentUser: currentUsername
+              ? likes.some((l) => l.username === currentUsername)
+              : false,
+          };
+        })
+      );
+
+      const newLikesMap: typeof likesMap = {};
+      likesData.forEach((l) => {
+        newLikesMap[l.postId] = { count: l.count, likedByCurrentUser: l.likedByCurrentUser };
+      });
+      setLikesMap(newLikesMap);
+
       if (data.length && selectedPostId == null) {
         const firstId = data[0].id;
         setSelectedPostId(firstId);
-
-        const full = await getPostById(firstId);
-        setSelectedPost(full);
+        setSelectedPost(await getPostById(firstId));
       }
-    } catch (e: any) {
-      setError(e?.response?.data?.message || "Failed to load posts");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load posts");
     } finally {
       setLoading(false);
     }
@@ -59,163 +76,64 @@ export default function PostPage() {
 
   const handleSelect = async (id: number) => {
     try {
-      setError(null);
       setSelectedPostId(id);
-      setFocusComment(false);
-
-      const full = await getPostById(id);
-      setSelectedPost(full);
-    } catch (e: any) {
-      setError(e?.response?.data?.message || "Failed to load post detail");
-      setSelectedPost(null);
-    }
-  };
-
-  const handleCommentFromFeed = async (id: number) => {
-    try {
-      setError(null);
-      setSelectedPostId(id);
-      setFocusComment(true);
-
-      const full = await getPostById(id);
-      setSelectedPost(full);
-    } catch (e: any) {
-      setError(e?.response?.data?.message || "Failed to load post detail");
-      setSelectedPost(null);
-    }
-  };
-
-  const toggleLike = async (postId: number) => {
-    if (!user) return;
-
-    // optimistic UI update
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === postId
-          ? {
-              ...p,
-              isLikedByCurrentUser: !p.isLikedByCurrentUser,
-              likesCount: p.isLikedByCurrentUser
-                ? p.likesCount - 1
-                : p.likesCount + 1,
-            }
-          : p
-      )
-    );
-
-    // keep detail panel in sync
-    setSelectedPost((prev) =>
-      prev && prev.id === postId
-        ? {
-            ...prev,
-            isLikedByCurrentUser: !prev.isLikedByCurrentUser,
-            likesCount: prev.isLikedByCurrentUser
-              ? prev.likesCount - 1
-              : prev.likesCount + 1,
-          }
-        : prev
-    );
-
-    try {
-      const post = posts.find((p) => p.id === postId);
-      if (!post) return;
-
-      post.isLikedByCurrentUser
-        ? await unlikePost(postId, user.username)
-        : await likePost(postId, user.username);
+      setSelectedPost(await getPostById(id));
     } catch (err) {
-      console.error("Failed to toggle like", err);
-    }
-  };
-
-
-
-  // ✅ NEW: refresh one post (detail + feed) after comment is added
-  const refreshPostCounts = async (postId: number) => {
-    try {
-      const full = await getPostById(postId);
-
-      // update detail panel if it's the same post
-      setSelectedPost((prev) => (prev && prev.id === postId ? full : prev));
-
-      // update feed list so PostCard shows updated count
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === postId ? { ...p, commentCount: full.commentCount } : p
-        )
-      );
-    } catch (e) {
-      // keep UI working even if refresh fails
-      console.warn("Failed to refresh post counts", e);
+      console.error(err);
+      setSelectedPost(null);
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      setError(null);
       await deletePost(id);
+      setPosts((prev) => prev.filter((p) => p.id !== id));
+      if (selectedPostId === id) setSelectedPostId(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-      setPosts((prev) => {
-        const next = prev.filter((p) => p.id !== id);
-
-        setSelectedPostId((currentSelected) => {
-          if (currentSelected !== id) return currentSelected;
-
-          const nextId = next.length ? next[0].id : null;
-
-          if (nextId == null) {
-            setSelectedPost(null);
-          } else {
-            getPostById(nextId)
-              .then((full) => setSelectedPost(full))
-              .catch(() => setSelectedPost(null));
-          }
-
-          return nextId;
-        });
-
-        return next;
-      });
-    } catch (e: any) {
-      if (e?.response?.status === 403) {
-        setError("You can only delete your own posts!");
+  const toggleLike = async (postId: number) => {
+    if (!user) return;
+    const current = likesMap[postId];
+    try {
+      if (current.likedByCurrentUser) {
+        await unlikePost(postId, user.username);
       } else {
-        setError(e?.response?.data?.message || "Failed to delete");
+        await likePost(postId, user.username);
       }
+      setLikesMap((prev) => ({
+        ...prev,
+        [postId]: {
+          count: current.likedByCurrentUser ? current.count - 1 : current.count + 1,
+          likedByCurrentUser: !current.likedByCurrentUser,
+        },
+      }));
+    } catch (err) {
+      console.error("Failed to toggle like", err);
     }
   };
 
   return (
-    <div className="post-page-container">
-      <h1 className="post-page-title">Home</h1>
-
+    <div style={{ maxWidth: 1000, margin: "24px auto", padding: 16 }}>
+      <h1>Posts</h1>
       <CreatePostForm onCreate={handleCreate} />
-
       {loading && <p>Loading...</p>}
-      {error && <p className="post-page-error">{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <div className="post-layout">
-        <div className="post-feed-column">
-          <PostList
-            posts={posts}
-            selectedPostId={selectedPostId}
-            onSelect={handleSelect}
-            onDelete={handleDelete}
-            currentUsername={currentUsername}
-            onComment={handleCommentFromFeed}
-                      onToggleLike={toggleLike}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
+        <PostList
+          posts={posts}
+          selectedPostId={selectedPostId}
+          onSelect={handleSelect}
+          onDelete={handleDelete}
+          currentUsername={currentUsername}
+          likesMap={likesMap}
+          onToggleLike={toggleLike}
+        />
 
-          />
-        </div>
-
-        <div className="post-detail-column">
-          <PostDetail
-            post={selectedPost}
-            focusComment={focusComment}
-            onFocused={() => setFocusComment(false)}
-            onCommentCreated={refreshPostCounts}
-          />
-        </div>
+        <PostDetail post={selectedPost} likesMap={likesMap} onToggleLike={toggleLike} />
       </div>
     </div>
   );
