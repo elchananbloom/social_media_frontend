@@ -1,46 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { PostResponse } from "../../utils/types";
 import CommentsPanel from "./CommentsPanel";
-import { likePost, unlikePost, Like, getLikesForPost } from "../../api/likesApi";
-import { useAuth } from "../../hooks/useAuth";
+
 
 export default function PostDetail({
   post,
   focusComment,
   onFocused,
-  onCommentCreated, 
+  onCommentCreated,
+  onToggleLike, 
 }: {
   post: PostResponse | null;
   focusComment: boolean;
   onFocused: () => void;
   onCommentCreated?: (postId: number) => Promise<void> | void;
+  onToggleLike: (postId: number) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { user } = useAuth();
-  const [likes, setLikes] = useState<Like[]>([]);
-  const [likedByCurrentUser, setLikedByCurrentUser] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-
-  const toggleLike = async () => {
-    if (!post || !user) return;
-
-    try {
-      setLoading(true);
-      if (likedByCurrentUser) {
-        await unlikePost(post.id, user.username);
-        setLikes(prev => prev.filter(l => l.username !== user.username));
-      } else {
-        const newLike = await likePost(post.id, user.username);
-        setLikes(prev => [...prev, newLike]);
-      }
-      setLikedByCurrentUser(!likedByCurrentUser);
-    } catch (err) {
-      console.error("Failed to toggle like", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (focusComment) {
@@ -48,25 +24,6 @@ export default function PostDetail({
       onFocused();
     }
   }, [focusComment, post?.id, onFocused]);
-
-  useEffect(() => {
-    if (!post) return;
-
-    const fetchLikes = async () => {
-      try {
-        const likesData = await getLikesForPost(post.id);
-        setLikes(likesData);
-        setLikedByCurrentUser(
-          user ? likesData.some((l) => l.username === user.username) : false
-        );
-      } catch (err) {
-        console.error("Failed to fetch likes", err);
-      }
-    };
-
-    fetchLikes();
-  }, [post, user]);
-  
 
   if (!post) return <div><h3>Detail</h3><p>Select a post.</p></div>;
 
@@ -79,9 +36,13 @@ export default function PostDetail({
         Author: {post.authorUsername} · {new Date(post.createdAt).toLocaleString()}
       </small>
 
-      <div style={{ marginTop: 8 }}>
-        <button onClick={toggleLike} disabled={loading}>
-          {likedByCurrentUser ? "❤️ Unlike" : "🤍 Like"} ({likes.length})
+      <div style={{ marginTop: 12 }}>
+        <button
+          type="button"
+          onClick={() => onToggleLike(post.id)}
+        >
+          {post.isLikedByCurrentUser ? "❤️ Unlike" : "🤍 Like"} (
+          {post.likesCount})
         </button>
       </div>
 
