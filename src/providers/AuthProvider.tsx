@@ -48,8 +48,19 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     const login = async (name: string, password: string) => {
         try {
             const response = await axios.post('/users/login', { username: name, password });
-            const token = response.data?.token;
-            console.log(response.data.token);
+            const raw = response.data;
+    const token =
+      raw?.token ||
+      raw?.accessToken ||
+      raw?.access_token ||
+      (typeof raw === "string" ? raw : null);
+
+    console.log("login response:", raw);
+    console.log("token extracted:", token);
+
+    if (!token || typeof token !== "string") {
+      throw new Error("Login succeeded but no token string was returned");
+    }
             if (token) {
                 localStorage.setItem('token', token);
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;

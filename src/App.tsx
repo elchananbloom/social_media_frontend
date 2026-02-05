@@ -8,6 +8,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import EditProfilePage from './components/EditProfilePage';
 import CreateProfilePage from './components/CreateProfilePage';
+import PostPage from "./pages/PostPage";
 
 function App() {
   return (
@@ -18,8 +19,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Register />} />
           <Route element={<RequiredAuth />}>
-            <Route path="/" element={<h1>Home Page - Protected</h1>} />
             <Route path="/create-profile" element={<CreateProfilePage />} />
+            <Route path="/" element={<PostPage />} />
             <Route path="/posts/:id" element={<h1>Post Detail Page - Protected</h1>} />
             <Route path="/create-post" element={<h1>Create Post Page - Protected</h1>} />
             <Route path="/edit-post/:id" element={<h1>Edit Post Page - Protected</h1>} />
