@@ -214,7 +214,6 @@ export default function PostPage() {
           focusComment={focusComment}
           onFocused={() => setFocusComment(false)}
           onCommentCreated={refreshPostCounts} 
-          onToggleLike={toggleLike}
         />
       </div>
     </div>
