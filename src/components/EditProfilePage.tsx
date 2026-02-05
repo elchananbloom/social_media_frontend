@@ -81,7 +81,7 @@ const EditProfilePage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const base_url = "http://localhost:8082";
+            const base_url = "http://localhost:8084";
             const token = localStorage.getItem('token');
             console.log(token);
             const submitData = {
