@@ -8,6 +8,9 @@ type PostCardProps = {
   onSelect: () => void;
   onDelete?: () => void;
   onComment?: () => void;
+  likes: number;
+  likedByCurrentUser: boolean;
+  onToggleLike: () => void;
 };
 
 export default function PostCard({
@@ -16,6 +19,9 @@ export default function PostCard({
   onSelect,
   onDelete,
   onComment,
+  likes,
+  likedByCurrentUser,
+  onToggleLike,
 }: Readonly<PostCardProps>) {
   return (
     <div
@@ -52,6 +58,16 @@ export default function PostCard({
             💬 {post.commentCount ?? 0}
           </button>
         )}
+
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleLike();
+          }}
+        >
+          {likedByCurrentUser ? "❤️ Unlike" : "🤍 Like"} ({likes})
+        </button>
 
         {onDelete && (
           <button

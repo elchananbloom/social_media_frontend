@@ -7,6 +7,7 @@ import PostList from "../components/posts/PostList";
 import PostDetail from "../components/posts/PostDetails";
 import { useAuth } from "../hooks/useAuth";
 import "./PostPage.css";
+import { likePost, unlikePost } from "../api/likesApi";
 
 export default function PostPage() {
   const [posts, setPosts] = useState<PostResponse[]>([]);
@@ -84,6 +85,51 @@ export default function PostPage() {
     }
   };
 
+  const toggleLike = async (postId: number) => {
+    if (!user) return;
+
+    // optimistic UI update
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId
+          ? {
+              ...p,
+              isLikedByCurrentUser: !p.isLikedByCurrentUser,
+              likesCount: p.isLikedByCurrentUser
+                ? p.likesCount - 1
+                : p.likesCount + 1,
+            }
+          : p
+      )
+    );
+
+    // keep detail panel in sync
+    setSelectedPost((prev) =>
+      prev && prev.id === postId
+        ? {
+            ...prev,
+            isLikedByCurrentUser: !prev.isLikedByCurrentUser,
+            likesCount: prev.isLikedByCurrentUser
+              ? prev.likesCount - 1
+              : prev.likesCount + 1,
+          }
+        : prev
+    );
+
+    try {
+      const post = posts.find((p) => p.id === postId);
+      if (!post) return;
+
+      post.isLikedByCurrentUser
+        ? await unlikePost(postId, user.username)
+        : await likePost(postId, user.username);
+    } catch (err) {
+      console.error("Failed to toggle like", err);
+    }
+  };
+
+
+
   // ✅ NEW: refresh one post (detail + feed) after comment is added
   const refreshPostCounts = async (postId: number) => {
     try {
@@ -157,6 +203,8 @@ export default function PostPage() {
             onDelete={handleDelete}
             currentUsername={currentUsername}
             onComment={handleCommentFromFeed}
+                      onToggleLike={toggleLike}
+
           />
         </div>
 

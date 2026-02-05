@@ -9,6 +9,7 @@ type PostListProps = {
   onDelete: (id: number) => Promise<void> | void;
   currentUsername: string | null;
   onComment: (id: number) => void;
+  onToggleLike: (id: number) => void;
 };
 
 export default function PostList({
@@ -18,6 +19,7 @@ export default function PostList({
   onDelete,
   currentUsername,
   onComment,
+  onToggleLike,
 }: Readonly<PostListProps>) {
   return (
     <div className="post-list-container">
@@ -34,6 +36,9 @@ export default function PostList({
             onSelect={() => onSelect(p.id)}
             onDelete={canDelete ? () => onDelete(p.id) : undefined}
             onComment={() => onComment(p.id)}
+            likes={p.likesCount}
+            likedByCurrentUser={p.isLikedByCurrentUser}
+            onToggleLike={() => onToggleLike(p.id)} 
           />
         );
       })}
