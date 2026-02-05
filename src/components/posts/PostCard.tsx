@@ -1,4 +1,5 @@
 import { PostResponse } from "../../utils/types";
+import "../../styles/post.css";
 
 type PostCardProps = {
   post: PostResponse;
@@ -17,29 +18,37 @@ export default function PostCard({
 }: Readonly<PostCardProps>) {
   return (
     <div
+      className={`post-card ${selected ? "selected" : ""}`}
       onClick={onSelect}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") onSelect();
       }}
-      style={{
-        border: selected ? "2px solid #333" : "1px solid #ccc",
-        padding: 12,
-        borderRadius: 10,
-        marginBottom: 10,
-        cursor: "pointer",
-      }}
     >
-      <p style={{ marginTop: 0 }}>{post.content}</p>
-      <small style={{ color: "#666" }}>
-        {post.authorUsername} · {new Date(post.createdAt).toLocaleString()}
-      </small>
+      <p className="post-content">{post.content}</p>
 
-      <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
+      {post.imageUrl && post.imageUrl.trim() !== "" && (
+        <img
+          src={post.imageUrl}
+          alt="post"
+          className="post-image"
+          loading="lazy"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+        />
+      )}
+
+      <div className="post-meta">
+        {post.authorUsername} · {new Date(post.createdAt).toLocaleString()}
+      </div>
+
+      <div className="post-actions">
         {onComment && (
           <button
             type="button"
+            className="post-btn"
             onClick={(e) => {
               e.stopPropagation();
               onComment();
@@ -52,6 +61,7 @@ export default function PostCard({
         {onDelete && (
           <button
             type="button"
+            className="post-btn danger"
             onClick={(e) => {
               e.stopPropagation();
               onDelete();

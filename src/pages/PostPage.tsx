@@ -1,20 +1,25 @@
 import { useEffect, useState } from "react";
 import { PostResponse } from "../utils/types";
-import { createPost, deletePost, getPostById, listPosts } from "../utils/PostApi";
+import {
+  createPost,
+  deletePost,
+  getPostById,
+  listPosts,
+} from "../utils/PostApi";
 
 import CreatePostForm from "../components/posts/CreatePostForm";
 import PostList from "../components/posts/PostList";
 import PostDetail from "../components/posts/PostDetails";
 import { useAuth } from "../hooks/useAuth";
 
+import "../styles/post.css";
+
 export default function PostPage() {
   const [posts, setPosts] = useState<PostResponse[]>([]);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
-
   const [selectedPost, setSelectedPost] = useState<PostResponse | null>(null);
 
   const [focusComment, setFocusComment] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +50,6 @@ export default function PostPage() {
 
   useEffect(() => {
     loadPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCreate = async (content: string, imageUrl?: string) => {
@@ -62,7 +66,7 @@ export default function PostPage() {
       const full = await getPostById(id);
       setSelectedPost(full);
     } catch (e: any) {
-      setError(e?.response?.data?.message || "Failed to load post detail");
+      setError("Failed to load post detail");
       setSelectedPost(null);
     }
   };
@@ -76,28 +80,27 @@ export default function PostPage() {
       const full = await getPostById(id);
       setSelectedPost(full);
     } catch (e: any) {
-      setError(e?.response?.data?.message || "Failed to load post detail");
+      setError("Failed to load post detail");
       setSelectedPost(null);
     }
   };
 
-  // ✅ NEW: refresh one post (detail + feed) after comment is added
   const refreshPostCounts = async (postId: number) => {
     try {
       const full = await getPostById(postId);
 
-      // update detail panel if it's the same post
-      setSelectedPost((prev) => (prev && prev.id === postId ? full : prev));
+      setSelectedPost((prev) =>
+        prev && prev.id === postId ? full : prev
+      );
 
-      // update feed list so PostCard shows updated count
       setPosts((prev) =>
         prev.map((p) =>
-          p.id === postId ? { ...p, commentCount: full.commentCount } : p
+          p.id === postId
+            ? { ...p, commentCount: full.commentCount }
+            : p
         )
       );
-    } catch (e) {
-      // keep UI working even if refresh fails
-      console.warn("Failed to refresh post counts", e);
+    } catch {
     }
   };
 
@@ -109,17 +112,17 @@ export default function PostPage() {
       setPosts((prev) => {
         const next = prev.filter((p) => p.id !== id);
 
-        setSelectedPostId((currentSelected) => {
-          if (currentSelected !== id) return currentSelected;
+        setSelectedPostId((current) => {
+          if (current !== id) return current;
 
           const nextId = next.length ? next[0].id : null;
 
-          if (nextId == null) {
-            setSelectedPost(null);
-          } else {
+          if (nextId) {
             getPostById(nextId)
-              .then((full) => setSelectedPost(full))
+              .then(setSelectedPost)
               .catch(() => setSelectedPost(null));
+          } else {
+            setSelectedPost(null);
           }
 
           return nextId;
@@ -131,28 +134,21 @@ export default function PostPage() {
       if (e?.response?.status === 403) {
         setError("You can only delete your own posts!");
       } else {
-        setError(e?.response?.data?.message || "Failed to delete");
+        setError("Failed to delete post");
       }
     }
   };
 
   return (
-    <div style={{ maxWidth: 1000, margin: "24px auto", padding: 16 }}>
-      <h1>Post Service</h1>
+    <div className="post-page">
+      <h1 className="post-title">Post Service</h1>
 
       <CreatePostForm onCreate={handleCreate} />
 
       {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error-text">{error}</p>}
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 16,
-          marginTop: 16,
-        }}
-      >
+      <div className="post-grid">
         <PostList
           posts={posts}
           selectedPostId={selectedPostId}
@@ -166,7 +162,7 @@ export default function PostPage() {
           post={selectedPost}
           focusComment={focusComment}
           onFocused={() => setFocusComment(false)}
-          onCommentCreated={refreshPostCounts} 
+          onCommentCreated={refreshPostCounts}
         />
       </div>
     </div>

@@ -1,18 +1,15 @@
 import { useEffect, useState, RefObject } from "react";
 import { CommentResponse } from "../../utils/types";
 import { addComment, listComments } from "../../utils/PostApi";
+import "../../styles/post.css";
 
 type CommentsPanelProps = {
   postId: number;
   inputRef?: RefObject<HTMLInputElement | null>;
-  onCommentCreated?: (postId: number) => Promise<void> | void; 
+  onCommentCreated?: (postId: number) => Promise<void> | void;
 };
 
-export default function CommentsPanel({
-  postId,
-  inputRef,
-  onCommentCreated,
-}: CommentsPanelProps) {
+export default function CommentsPanel({ postId, inputRef, onCommentCreated }: CommentsPanelProps) {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [content, setContent] = useState("");
   const [open, setOpen] = useState(false);
@@ -49,7 +46,6 @@ export default function CommentsPanel({
       const created = await addComment(postId, { content: content.trim() });
 
       setComments((prev) => [created, ...prev]);
-
       setContent("");
       setOpen(true);
 
@@ -63,37 +59,36 @@ export default function CommentsPanel({
 
   return (
     <div style={{ marginTop: 14 }}>
-      <div style={{ display: "flex", gap: 8 }}>
+      <div className="comment-row">
         <input
           ref={inputRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Write a comment..."
-          style={{ flex: 1, padding: 8 }}
+          className="comment-input"
         />
-        <button type="button" onClick={submit} disabled={posting}>
+        <button type="button" className="post-btn primary" onClick={submit} disabled={posting}>
           {posting ? "Posting..." : "Comment"}
         </button>
       </div>
 
-      {error && <p style={{ color: "red", marginTop: 6 }}>{error}</p>}
+      {error && <div className="error-text">{error}</div>}
 
-      <button type="button" onClick={() => setOpen((v) => !v)} style={{ marginTop: 10 }}>
-        {open ? "Hide comments" : "Show comments"}
-      </button>
+      <div className="comment-toggle">
+        <button type="button" className="post-btn" onClick={() => setOpen((v) => !v)}>
+          {open ? "Hide comments" : "Show comments"}
+        </button>
+      </div>
 
       {open && (
-        <div style={{ marginTop: 10, borderTop: "1px solid #eee", paddingTop: 10 }}>
+        <div className="comment-list">
           {loading && <p>Loading comments...</p>}
           {!loading && comments.length === 0 && <p>No comments yet.</p>}
 
           {comments.map((c) => (
-            <div
-              key={c.id}
-              style={{ borderTop: "1px solid #f1f1f1", marginTop: 10, paddingTop: 10 }}
-            >
+            <div key={c.id} className="comment-item">
               <div>{c.content}</div>
-              <small style={{ color: "#666" }}>
+              <small className="comment-meta">
                 {c.authorUsername} · {new Date(c.createdAt).toLocaleString()}
               </small>
             </div>
