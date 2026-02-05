@@ -85,33 +85,46 @@ export default function PostPage() {
   const toggleLike = async (postId: number) => {
     if (!user) return;
 
+    // optimistic UI update
     setPosts((prev) =>
-      prev.map((p) => {
-        if (p.id !== postId) return p;
+      prev.map((p) =>
+        p.id === postId
+          ? {
+              ...p,
+              isLikedByCurrentUser: !p.isLikedByCurrentUser,
+              likesCount: p.isLikedByCurrentUser
+                ? p.likesCount - 1
+                : p.likesCount + 1,
+            }
+          : p
+      )
+    );
 
-        const liked = p.isLikedByCurrentUser;
-
-        return {
-          ...p,
-        isLikedByCurrentUser: !liked,
-        likesCount: liked ? p.likesCount - 1 : p.likesCount + 1,
-      };
-    })
-  );
+    // keep detail panel in sync
+    setSelectedPost((prev) =>
+      prev && prev.id === postId
+        ? {
+            ...prev,
+            isLikedByCurrentUser: !prev.isLikedByCurrentUser,
+            likesCount: prev.isLikedByCurrentUser
+              ? prev.likesCount - 1
+              : prev.likesCount + 1,
+          }
+        : prev
+    );
 
     try {
-      const post = posts.find(p => p.id === postId);
+      const post = posts.find((p) => p.id === postId);
       if (!post) return;
 
-      if (post.isLikedByCurrentUser) {
-        await unlikePost(postId, user.username);
-      } else {
-        await likePost(postId, user.username);
-      }
+      post.isLikedByCurrentUser
+        ? await unlikePost(postId, user.username)
+        : await likePost(postId, user.username);
     } catch (err) {
       console.error("Failed to toggle like", err);
     }
   };
+
 
 
   // ✅ NEW: refresh one post (detail + feed) after comment is added
@@ -201,6 +214,7 @@ export default function PostPage() {
           focusComment={focusComment}
           onFocused={() => setFocusComment(false)}
           onCommentCreated={refreshPostCounts} 
+          onToggleLike={toggleLike}
         />
       </div>
     </div>
