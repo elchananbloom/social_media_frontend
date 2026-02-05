@@ -1,4 +1,6 @@
 import { PostResponse } from "../../utils/types";
+import UserAvatar from "../UserAvatar";
+import "./PostCard.css";
 
 type PostCardProps = {
   post: PostResponse;
@@ -29,29 +31,31 @@ export default function PostCard({
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") onSelect();
       }}
-      style={{
-        border: selected ? "2px solid #333" : "1px solid #ccc",
-        padding: 12,
-        borderRadius: 10,
-        marginBottom: 10,
-        cursor: "pointer",
-      }}
+      className={`post-card ${selected ? "selected" : ""}`}
     >
-      <p style={{ marginTop: 0 }}>{post.content}</p>
-      <small style={{ color: "#666" }}>
-        {post.authorUsername} · {new Date(post.createdAt).toLocaleString()}
-      </small>
+      <div className="post-header">
+        <UserAvatar username={post.authorUsername} profilePictureUrl={post.authorProfilePictureUrl} />
+        <div className="post-header-info">
+          <span className="post-author">@{post.authorUsername}</span>
+          <span className="post-time">· {new Date(post.createdAt).toLocaleString()}</span>
+        </div>
+      </div>
 
-      <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
+      <div className="post-body">
+        <p className="post-content">{post.content}</p>
+      </div>
+
+      <div className="post-actions">
         {onComment && (
           <button
             type="button"
+            className="post-action-button comment"
             onClick={(e) => {
               e.stopPropagation();
               onComment();
             }}
           >
-            💬 Comment ({post.commentCount ?? 0})
+            💬 {post.commentCount ?? 0}
           </button>
         )}
 
@@ -68,12 +72,13 @@ export default function PostCard({
         {onDelete && (
           <button
             type="button"
+            className="post-action-button delete"
             onClick={(e) => {
               e.stopPropagation();
               onDelete();
             }}
           >
-            Delete
+            🗑️ Delete
           </button>
         )}
       </div>

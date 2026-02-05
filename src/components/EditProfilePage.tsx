@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useEffect, useState } from "react";
 import { Profile } from "../utils/types";
 import axios from "axios";
+import "./EditProfilePage.css";
 
 
 const EditProfilePage = () => {
@@ -113,90 +114,97 @@ const EditProfilePage = () => {
     };
 
     if (loading) {
-        return <p>Loading profile...</p>;
+        return <p className="loading-text">Loading profile...</p>;
     }
 
     if (error) {
-        return <p style={{ color: "red" }}>{error}</p>;
+        return <p className="error-text">{error}</p>;
     }
 
     return (
-        <div>
-            <h1>Edit Profile</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="displayName">Display Name:</label>
+        <div className="edit-profile-container">
+            <h1 className="edit-profile-title">Edit Profile</h1>
+            <form onSubmit={handleSubmit} className="edit-profile-form">
+                <div className="edit-form-group">
+                    <label htmlFor="displayName" className="edit-label">Display Name:</label>
                     <input
                         type="text"
                         id="displayName"
                         name="displayName"
                         value={formData.displayName}
                         onChange={handleChange}
+                        className="edit-input"
                     />
                 </div>
-                <div>
-                    <label htmlFor="profilePictureUrl">Profile Picture URL:</label>
+                <div className="edit-form-group">
+                    <label htmlFor="profilePictureUrl" className="edit-label">Profile Picture URL:</label>
                     <input
                         type="text"
                         id="profilePictureUrl"
                         name="profilePictureUrl"
                         value={formData.profilePictureUrl}
                         onChange={handleChange}
+                        className="edit-input"
                     />
                 </div>
                 {formData.profilePictureUrl && (
-                    <img src={formData.profilePictureUrl} alt="Profile preview" style={{ maxWidth: "200px" }} />
+                    <img src={formData.profilePictureUrl} alt="Profile preview" className="edit-preview-image" />
                 )}
-                <div>
-                    <label htmlFor="secondaryImageUrl">Secondary Image URL:</label>
+                <div className="edit-form-group">
+                    <label htmlFor="secondaryImageUrl" className="edit-label">Secondary Image URL:</label>
                     <input
                         type="text"
                         id="secondaryImageUrl"
                         name="secondaryImageUrl"
                         value={formData.secondaryImageUrl}
                         onChange={handleChange}
+                        className="edit-input"
                     />
                 </div>
                 {formData.secondaryImageUrl && (
-                    <img src={formData.secondaryImageUrl} alt="Secondary preview" style={{ maxWidth: "200px" }} />
+                    <img src={formData.secondaryImageUrl} alt="Secondary preview" className="edit-preview-image" />
                 )}
-                <div>
-                    <label htmlFor="aboutMe">About Me:</label>
+                <div className="edit-form-group">
+                    <label htmlFor="aboutMe" className="edit-label">About Me:</label>
                     <textarea
                         id="aboutMe"
                         name="aboutMe"
                         value={formData.aboutMe}
                         onChange={handleChange}
                         rows={4}
+                        className="edit-textarea"
                     />
                 </div>
-                <div>
-                    <label htmlFor="location">Location:</label>
+                <div className="edit-form-group">
+                    <label htmlFor="location" className="edit-label">Location:</label>
                     <input
                         type="text"
                         id="location"
                         name="location"
                         value={formData.location}
                         onChange={handleChange}
+                        className="edit-input"
                     />
                 </div>
-                <div>
-                    <label htmlFor="birthdate">Birthdate:</label>
+                <div className="edit-form-group">
+                    <label htmlFor="birthdate" className="edit-label">Birthdate:</label>
                     <input
                         type="date"
                         id="birthdate"
                         name="birthdate"
                         value={formData.birthdate}
                         onChange={handleChange}
+                        className="edit-input"
                     />
                 </div>
-                <div>
-                    <label htmlFor="gender">Gender:</label>
+                <div className="edit-form-group">
+                    <label htmlFor="gender" className="edit-label">Gender:</label>
                     <select
                         id="gender"
                         name="gender"
                         value={formData.gender}
                         onChange={handleChange}
+                        className="edit-select"
                     >
                         <option value="">Select...</option>
                         <option value="male">Male</option>
@@ -205,18 +213,21 @@ const EditProfilePage = () => {
                         <option value="prefer-not-to-say">Prefer not to say</option>
                     </select>
                 </div>
-                <div>
-                    <label htmlFor="phoneNumber">Phone Number:</label>
+                <div className="edit-form-group">
+                    <label htmlFor="phoneNumber" className="edit-label">Phone Number:</label>
                     <input
                         type="tel"
                         id="phoneNumber"
                         name="phoneNumber"
                         value={formData.phoneNumber}
                         onChange={handleChange}
+                        className="edit-input"
                     />
                 </div>
-                <button type="submit">Save Changes</button>
-                <button type="button" onClick={() => navigate(-1)}>Cancel</button>
+                <div className="button-group">
+                    <button type="submit" className="save-button">Save Changes</button>
+                    <button type="button" onClick={() => navigate(-1)} className="cancel-button">Cancel</button>
+                </div>
             </form>
         </div>
     );

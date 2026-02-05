@@ -1,0 +1,101 @@
+.create-profile-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--bg-color);
+}
+
+.create-profile-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.create-profile-subtitle {
+    color: var(--secondary-text);
+    margin-bottom: 30px;
+    font-size: 15px;
+}
+
+.create-profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profile-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-label {
+    font-weight: bold;
+    font-size: 15px;
+    color: var(--text-color);
+}
+
+.profile-input,
+.profile-select,
+.profile-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #f5f8fa;
+    transition: all 0.2s;
+}
+
+.profile-input:focus,
+.profile-select:focus,
+.profile-textarea:focus {
+    background-color: #fff;
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.profile-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.profile-preview-image {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.create-profile-submit {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 14px 24px;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+    align-self: flex-start;
+}
+
+.create-profile-submit:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+}
+
+.create-profile-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.profile-error {
+    color: var(--error-color);
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: rgba(224, 36, 94, 0.1);
+    border-radius: 4px;
+}

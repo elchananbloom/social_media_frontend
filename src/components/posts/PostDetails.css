@@ -1,0 +1,46 @@
+.post-details-container {
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: var(--card-radius);
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.post-details-header {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.post-details-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.post-details-content {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--text-color);
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+}
+
+.post-details-stats {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+    color: var(--secondary-text);
+    font-size: 15px;
+}
+
+.empty-detail {
+    padding: 40px;
+    text-align: center;
+    color: var(--secondary-text);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+}

@@ -1,7 +1,7 @@
-// src/components/LogOut.tsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import "./LogOut.css";
 
 export default function LogOut() {
     const { logout, user } = useAuth();
@@ -23,7 +23,7 @@ export default function LogOut() {
     if (!user) return null;
 
     return (
-        <button type="button" onClick={handleLogout} style={{ padding: 8 }}>
+        <button type="button" onClick={handleLogout} className="logout-button">
             Log out
         </button>
     );

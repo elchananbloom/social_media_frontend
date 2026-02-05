@@ -3,6 +3,8 @@ import { useAuth } from "../hooks/useAuth";
 import { useEffect, useState } from "react";
 import { Profile } from "../utils/types";
 import axios from "axios";
+import UserAvatar from "./UserAvatar";
+import "./ProfilePage.css";
 import { getFollowers, getFollowing, followUser, unfollowUser,} from "../api/followApi";
 import {getLikesCountByUser} from "../api/likesApi";
 
@@ -11,7 +13,6 @@ const ProfilePage = () => {
   let { username } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
-
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [displayedUsername, setDisplayedUsername] = useState<string | undefined>(username);
@@ -75,7 +76,15 @@ const ProfilePage = () => {
       }
       try {
         const base_url = "http://localhost:8082";
-        const response = await axios.get(`${base_url}/profiles/${usernameToFetch}`);
+        const response = await axios.get(`${base_url}/profiles/${usernameToFetch}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              'Access-Control-Allow-Origin': '*',
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         console.log("Fetched profile:", response.data);
         setProfile(response.data);
 
@@ -103,24 +112,55 @@ const ProfilePage = () => {
     // Always fetch profile - handle undefined username inside fetchProfile
     fetchProfile();
   }, [username, user]);
-  return (
-    <div>
-      {profile ? (
-        <div>
-          <h1>{profile.displayName || profile.username}'s Profile</h1>
-          {profile.profilePictureUrl && (
-            <img src={profile.profilePictureUrl} alt={`${profile.username}'s profile`} />
-          )}
-          <p>About Me: {profile.aboutMe || "N/A"}</p>
-          <p>Location: {profile.location || "N/A"}</p>
-          <p>Birthdate: {profile.birthdate || "N/A"}</p>
-          <p>Gender: {profile.gender || "N/A"}</p>
-          {user?.username === displayedUsername && (
-            <button onClick={() => navigate("/profile/me/edit")}>Edit Profile</button>
-          )}
-          <p>Phone Number: {profile.phoneNumber || "N/A"}</p>
 
-          {user?.username !== displayedUsername && (
+  return (
+    <div className="profile-container">
+      {profile ? (
+        <div className="profile-header">
+          <div className="profile-cover">
+            {profile.secondaryImageUrl && (
+              <img src={profile.secondaryImageUrl} alt={`${profile.username}'s profile`} className="profile-cover-image" />
+            )}
+          </div>
+
+          <div className="profile-action-bar">
+            {user?.username === displayedUsername && (
+              <button onClick={() => navigate("/profile/me/edit")} className="edit-profile-button">Edit profile</button>
+            )}
+          </div>
+
+          <div className="profile-avatar-wrapper">
+            <UserAvatar
+              username={profile.username}
+              profilePictureUrl={profile.profilePictureUrl}
+              size="large"
+              className="profile-avatar-large-position"
+            />
+          </div>
+
+          <div className="profile-info">
+            <h1 className="profile-name">{profile.displayName || profile.username}</h1>
+            <p className="profile-handle">@{profile.username}</p>
+
+            <div className="profile-bio">
+              {profile.aboutMe || "No bio yet."}
+            </div>
+
+            <div className="profile-details">
+              {profile.location && (
+                <span className="profile-detail-item">📍 {profile.location}</span>
+              )}
+              {profile.birthdate && (
+                <span className="profile-detail-item">🎈 {profile.birthdate}</span>
+              )}
+              {profile.gender && (
+                <span className="profile-detail-item">⚧ {profile.gender}</span>
+              )}
+              {profile.phoneNumber && (
+                <span className="profile-detail-item">📞 {profile.phoneNumber}</span>
+              )}
+            </div>
+            {user?.username !== displayedUsername && (
             <div>
               <button onClick={handleFollowToggle}>
                 {isFollowing ? "Unfollow" : "Follow"}
@@ -130,14 +170,15 @@ const ProfilePage = () => {
               <p>Total likes for this user:: {totalLikes}</p>
             </div>
           )}
+          </div>
         </div>
       ) : (
-        <div>
-          <p>Profile not found.</p>
+        <div className="not-found-container">
+          <p className="not-found-title">Profile not found.</p>
           {user?.username === displayedUsername && (
             <div>
-              <p>It looks like you haven't created your profile yet.</p>
-              <button onClick={() => navigate("/create-profile")}>Create Profile</button>
+              <p className="not-found-text">It looks like you haven't created your profile yet.</p>
+              <button onClick={() => navigate("/create-profile")} className="create-profile-button">Create Profile</button>
             </div>
           )}
         </div>

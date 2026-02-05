@@ -1,0 +1,42 @@
+.post-page-container {
+    max-width: 1000px;
+    margin: 24px auto;
+    padding: 16px;
+}
+
+.post-page-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.post-layout {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+    align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+    .post-layout {
+        flex-direction: column;
+    }
+}
+
+.post-feed-column {
+    flex: 1;
+    width: 100%;
+}
+
+.post-detail-column {
+    flex: 1;
+    width: 100%;
+    position: sticky;
+    top: 80px;
+}
+
+.post-page-error {
+    color: var(--error-color);
+    margin-bottom: 16px;
+}

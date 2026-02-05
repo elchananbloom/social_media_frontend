@@ -6,6 +6,7 @@ import CreatePostForm from "../components/posts/CreatePostForm";
 import PostList from "../components/posts/PostList";
 import PostDetail from "../components/posts/PostDetails";
 import { useAuth } from "../hooks/useAuth";
+import "./PostPage.css";
 import { likePost, unlikePost } from "../api/likesApi";
 
 export default function PostPage() {
@@ -185,38 +186,36 @@ export default function PostPage() {
   };
 
   return (
-    <div style={{ maxWidth: 1000, margin: "24px auto", padding: 16 }}>
-      <h1>Post Service</h1>
+    <div className="post-page-container">
+      <h1 className="post-page-title">Home</h1>
 
       <CreatePostForm onCreate={handleCreate} />
 
       {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="post-page-error">{error}</p>}
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 16,
-          marginTop: 16,
-        }}
-      >
-        <PostList
-          posts={posts}
-          selectedPostId={selectedPostId}
-          onSelect={handleSelect}
-          onDelete={handleDelete}
-          currentUsername={currentUsername}
-          onComment={handleCommentFromFeed}
-          onToggleLike={toggleLike}
-        />
+      <div className="post-layout">
+        <div className="post-feed-column">
+          <PostList
+            posts={posts}
+            selectedPostId={selectedPostId}
+            onSelect={handleSelect}
+            onDelete={handleDelete}
+            currentUsername={currentUsername}
+            onComment={handleCommentFromFeed}
+                      onToggleLike={toggleLike}
 
-        <PostDetail
-          post={selectedPost}
-          focusComment={focusComment}
-          onFocused={() => setFocusComment(false)}
-          onCommentCreated={refreshPostCounts}
-        />
+          />
+        </div>
+
+        <div className="post-detail-column">
+          <PostDetail
+            post={selectedPost}
+            focusComment={focusComment}
+            onFocused={() => setFocusComment(false)}
+            onCommentCreated={refreshPostCounts}
+          />
+        </div>
       </div>
     </div>
   );

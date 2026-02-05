@@ -1,0 +1,114 @@
+.register-container {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.register-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: var(--text-color);
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    text-align: left;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.submit-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 14px;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+}
+
+.submit-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.server-error {
+    color: var(--error-color);
+    margin-top: 15px;
+}
+
+.suggestions-container {
+    margin-top: 12px;
+    text-align: left;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    background-color: var(--bg-hover);
+}
+
+.suggestions-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.suggestions-list {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.suggestion-item {
+    margin-bottom: 4px;
+}
+
+.suggestion-button {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.suggestion-button:hover {
+    text-decoration: none;
+}

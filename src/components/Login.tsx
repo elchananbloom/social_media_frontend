@@ -1,9 +1,9 @@
-// src/components/Login.tsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import "./Login.css";
 
 type LoginFormValues = {
     username: string;
@@ -43,49 +43,49 @@ export default function Login() {
     });
 
     return (
-        <div style={{ maxWidth: 420, margin: "0 auto" }}>
-            <h2>Login</h2>
-            <form onSubmit={formik.handleSubmit} noValidate>
-                <div style={{ marginBottom: 8 }}>
-                    <label>Username</label>
+        <div className="login-container">
+            <h2 className="login-title">Sign in to Twitter</h2>
+            <form onSubmit={formik.handleSubmit} noValidate className="login-form">
+                <div className="form-group">
+                    <label className="form-label">Username</label>
                     <input
                         name="username"
                         value={formik.values.username}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        style={{ width: "100%" }}
+                        className="form-input"
                     />
                     {formik.touched.username && formik.errors.username && (
-                        <div style={{ color: "red" }}>{formik.errors.username}</div>
+                        <div className="error-message">{formik.errors.username}</div>
                     )}
                 </div>
 
-                <div style={{ marginBottom: 8 }}>
-                    <label>Password</label>
+                <div className="form-group">
+                    <label className="form-label">Password</label>
                     <input
                         name="password"
                         type="password"
                         value={formik.values.password}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        style={{ width: "100%" }}
+                        className="form-input"
                     />
                     {formik.touched.password && formik.errors.password && (
-                        <div style={{ color: "red" }}>{formik.errors.password}</div>
+                        <div className="error-message">{formik.errors.password}</div>
                     )}
                 </div>
 
-                <button type="submit" disabled={formik.isSubmitting}>
+                <button type="submit" disabled={formik.isSubmitting} className="submit-button">
                     Login
                 </button>
             </form>
 
-            {serverError && <div style={{ color: "red", marginTop: 12 }}>{serverError}</div>}
+            {serverError && <div className="server-error">{serverError}</div>}
 
-            <div style={{ marginTop: 16 }}>
+            <div className="register-link">
                 <span>Don't have an account? </span>
-                <Link to="/signup" style={{ color: "blue", textDecoration: "underline" }}>
-                    Register
+                <Link to="/signup">
+                    Sign up
                 </Link>
             </div>
         </div>

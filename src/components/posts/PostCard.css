@@ -1,0 +1,97 @@
+.post-card {
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    border-radius: 0;
+    margin-bottom: 12px;
+    cursor: pointer;
+    background-color: white;
+    transition: background-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.post-card.selected {
+    border: 2px solid var(--primary-color);
+    background-color: var(--bg-hover);
+}
+
+.post-card:hover {
+    background-color: var(--bg-hover);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.post-header-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-author {
+    font-weight: bold;
+    color: var(--text-color);
+    font-size: 15px;
+}
+
+.post-time {
+    color: var(--secondary-text);
+    font-size: 14px;
+}
+
+.post-body {
+    padding-left: 60px;
+}
+
+@media (max-width: 480px) {
+    .post-body {
+        padding-left: 0;
+    }
+}
+
+.post-content {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    color: var(--text-color);
+}
+
+.post-actions {
+    display: flex;
+    gap: 16px;
+    padding-left: 60px;
+}
+
+@media (max-width: 480px) {
+    .post-actions {
+        padding-left: 0;
+    }
+}
+
+.post-action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--secondary-text);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border-radius: 9999px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.post-action-button.comment:hover {
+    color: var(--primary-color);
+    background-color: rgba(29, 161, 242, 0.1);
+}
+
+.post-action-button.delete:hover {
+    color: var(--error-color);
+    background-color: rgba(224, 36, 94, 0.1);
+}

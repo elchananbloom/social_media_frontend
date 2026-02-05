@@ -1,5 +1,6 @@
 import { PostResponse } from "../../utils/types";
 import PostCard from "./PostCard";
+import "./PostList.css";
 
 type PostListProps = {
   posts: PostResponse[];
@@ -21,8 +22,8 @@ export default function PostList({
   onToggleLike,
 }: Readonly<PostListProps>) {
   return (
-    <div>
-      <h3>Feed</h3>
+    <div className="post-list-container">
+      <h3 className="post-list-header">Feed</h3>
 
       {posts.map((p) => {
         const canDelete = !!currentUsername && p.authorUsername === currentUsername;
@@ -42,7 +43,7 @@ export default function PostList({
         );
       })}
 
-      {!posts.length && <p>No posts yet.</p>}
+      {!posts.length && <p className="empty-feed">No posts yet.</p>}
     </div>
   );
 }

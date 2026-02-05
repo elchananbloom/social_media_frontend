@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react"; 
 import { PostResponse } from "../../utils/types";
 import CommentsPanel from "./CommentsPanel";
+import UserAvatar from "../UserAvatar";
+import "./PostDetails.css";
 import { getLikesForPost, likePost, unlikePost, Like } from "../../api/likesApi";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -8,7 +10,7 @@ export default function PostDetail({
   post,
   focusComment,
   onFocused,
-  onCommentCreated, 
+  onCommentCreated,
 }: {
   post: PostResponse | null;
   focusComment: boolean;
@@ -71,40 +73,36 @@ export default function PostDetail({
     }
   };
 
-  if (!post)
-    return (
-      <div>
-        <h3>Detail</h3>
-        <p>Select a post.</p>
-      </div>
-    );
+    if (!post) return <div className="empty-detail"><h3>Detail</h3><p>Select a post.</p></div>;
+
 
   return (
-    <div style={{ border: "1px solid #ddd", padding: 12, borderRadius: 10 }}>
-      <h3>Detail</h3>
+    <div className="post-details-container">
+      <h3 className="post-details-header">Detail</h3>
 
-      <p>{post.content}</p>
-      {post.imageUrl && <img src={post.imageUrl} alt="Post" width={300} />}
-      <small style={{ color: "#666" }}>
-        Author: {post.authorUsername} · {new Date(post.createdAt).toLocaleString()}
-      </small>
+      <div className="post-details-user">
+        <UserAvatar username={post.authorUsername} profilePictureUrl={post.authorProfilePictureUrl} />
+        <div>
+          <div style={{ fontWeight: "bold" }}>@{post.authorUsername}</div>
+          <small style={{ color: "var(--secondary-text)" }}>{new Date(post.createdAt).toLocaleString()}</small>
+        </div>
+      </div>
 
-      {/* Likes */}
-      <div style={{ marginTop: 8 }}>
+      <p className="post-details-content">{post.content}</p>
+
+      <div className="post-details-stats">
+        <div style={{ marginTop: 8 }}>
         <button onClick={toggleLike} disabled={loading}>
           {likedByCurrentUser ? "❤️ Unlike" : "🤍 Like"} ({likes.length})
         </button>
       </div>
-
-      {/* Comment count */}
-      <div style={{ marginTop: 8, color: "#666", fontSize: 12 }}>
         Comments: <b>{post.commentCount ?? 0}</b>
       </div>
 
       <CommentsPanel
         postId={post.id}
         inputRef={inputRef}
-        onCommentCreated={onCommentCreated} 
+        onCommentCreated={onCommentCreated}
       />
     </div>
   );

@@ -8,7 +8,7 @@ export type User = {
 
 export type AuthContextValue = {
   user: User | null;
-  signup: (username: string,email: string, password: string) => Promise<any>;
+  signup: (username: string, email: string, password: string) => Promise<any>;
   login: (name: string, password: string) => Promise<string>;
   logout: () => void;
 }
@@ -16,6 +16,7 @@ export type AuthContextValue = {
 export interface PostResponse {
   id: number;
   authorUsername: string;
+  authorProfilePictureUrl?: string;
   content: string;
   imageUrl?: string | null;
   createdAt: string;
@@ -36,8 +37,9 @@ export interface CommentResponse {
   id: number;
   postId: number;
   authorUsername: string;
+  authorProfilePictureUrl?: string;
   content: string;
-  createdAt: string; 
+  createdAt: string;
 }
 
 
@@ -48,12 +50,12 @@ export interface CreateCommentRequest {
 export type Profile = {
   id: number;
   username: string;
-    aboutMe?: string;
-    displayName?: string;
-    profilePictureUrl?: string;
-    location?: string;
-    birthdate?: string;
-    gender?: string;
-    secondaryImageUrl?: string;
-    phoneNumber?: string;
+  aboutMe?: string;
+  displayName?: string;
+  profilePictureUrl?: string;
+  location?: string;
+  birthdate?: string;
+  gender?: string;
+  secondaryImageUrl?: string;
+  phoneNumber?: string;
 }

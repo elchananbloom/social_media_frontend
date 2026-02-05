@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./CreatePostForm.css";
 
 export default function CreatePostForm({
   onCreate,
@@ -22,23 +23,28 @@ export default function CreatePostForm({
   };
 
   return (
-    <div style={{ border: "1px solid #ddd", padding: 12, borderRadius: 10 }}>
+    <div className="create-post-container">
       <textarea
-        placeholder="What is on your mind?"
+        placeholder="What is happening?!"
         value={content}
         onChange={(e) => setContent(e.target.value)}
         rows={3}
-        style={{ width: "100%", padding: 10 }}
+        className="create-post-textarea"
       />
-      <input
-        placeholder="Optional imageUrl"
-        value={imageUrl}
-        onChange={(e) => setImageUrl(e.target.value)}
-        style={{ width: "100%", marginTop: 8, padding: 10 }}
-      />
-      <button onClick={submit} disabled={submitting} style={{ marginTop: 8 }}>
-        {submitting ? "Posting..." : "Post"}
-      </button>
+
+      <div className="create-post-divider"></div>
+
+      <div className="create-post-footer">
+        <input
+          placeholder="Optional image URL"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          className="create-post-input"
+        />
+        <button onClick={submit} disabled={submitting} className="post-submit-button">
+          {submitting ? "Posting..." : "Post"}
+        </button>
+      </div>
     </div>
   );
 }

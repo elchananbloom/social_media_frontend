@@ -1,0 +1,114 @@
+
+.edit-profile-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--bg-color);
+}
+
+.edit-profile-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.edit-profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.edit-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.edit-label {
+    font-weight: bold;
+    font-size: 15px;
+    color: var(--text-color);
+}
+
+.edit-input,
+.edit-select,
+.edit-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #f5f8fa;
+    transition: all 0.2s;
+}
+
+.edit-input:focus,
+.edit-select:focus,
+.edit-textarea:focus {
+    background-color: #fff;
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.edit-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.edit-preview-image {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.save-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 14px 24px;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.save-button:hover {
+    background-color: var(--primary-hover);
+}
+
+.cancel-button {
+    background-color: transparent;
+    color: var(--text-color);
+    padding: 14px 24px;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    font-weight: bold;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cancel-button:hover {
+    background-color: var(--bg-hover);
+}
+
+.loading-text,
+.error-text {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 18px;
+}
+
+.error-text {
+    color: var(--error-color);
+}

@@ -1,0 +1,19 @@
+.post-list-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.post-list-header {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.empty-feed {
+    text-align: center;
+    color: var(--secondary-text);
+    padding: 40px;
+    font-size: 16px;
+}
