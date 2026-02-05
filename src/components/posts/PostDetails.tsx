@@ -1,17 +1,20 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PostResponse } from "../../utils/types";
 import CommentsPanel from "./CommentsPanel";
+
 
 export default function PostDetail({
   post,
   focusComment,
   onFocused,
-  onCommentCreated, 
+  onCommentCreated,
+  onToggleLike, 
 }: {
   post: PostResponse | null;
   focusComment: boolean;
   onFocused: () => void;
   onCommentCreated?: (postId: number) => Promise<void> | void;
+  onToggleLike: (postId: number) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -32,6 +35,16 @@ export default function PostDetail({
       <small style={{ color: "#666" }}>
         Author: {post.authorUsername} · {new Date(post.createdAt).toLocaleString()}
       </small>
+
+      <div style={{ marginTop: 12 }}>
+        <button
+          type="button"
+          onClick={() => onToggleLike(post.id)}
+        >
+          {post.isLikedByCurrentUser ? "❤️ Unlike" : "🤍 Like"} (
+          {post.likesCount})
+        </button>
+      </div>
 
       <div style={{ marginTop: 8, color: "#666", fontSize: 12 }}>
         Comments: <b>{post.commentCount ?? 0}</b>
