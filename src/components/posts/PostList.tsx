@@ -1,15 +1,14 @@
-import { PostResponse } from "../../utils/types";
 import PostCard from "./PostCard";
-import "./PostList.css";
+import { PostResponse } from "../../utils/types";
 
 type PostListProps = {
   posts: PostResponse[];
   selectedPostId: number | null;
   onSelect: (id: number) => void;
-  onDelete: (id: number) => Promise<void> | void;
+  onDelete: (id: number) => void;
   currentUsername: string | null;
-  onComment: (id: number) => void;
-  onToggleLike: (id: number) => void;
+  likesMap: { [postId: number]: { count: number; likedByCurrentUser: boolean } };
+  onToggleLike: (postId: number) => void;
 };
 
 export default function PostList({
@@ -18,15 +17,15 @@ export default function PostList({
   onSelect,
   onDelete,
   currentUsername,
-  onComment,
+  likesMap,
   onToggleLike,
 }: Readonly<PostListProps>) {
   return (
-    <div className="post-list-container">
-      <h3 className="post-list-header">Feed</h3>
-
+    <div>
       {posts.map((p) => {
-        const canDelete = !!currentUsername && p.authorUsername === currentUsername;
+        const canDelete = currentUsername && p.authorUsername === currentUsername;
+        const likes = likesMap[p.id]?.count ?? 0;
+        const likedByCurrentUser = likesMap[p.id]?.likedByCurrentUser ?? false;
 
         return (
           <PostCard
@@ -35,15 +34,13 @@ export default function PostList({
             selected={p.id === selectedPostId}
             onSelect={() => onSelect(p.id)}
             onDelete={canDelete ? () => onDelete(p.id) : undefined}
-            onComment={() => onComment(p.id)}
-            likes={p.likesCount}
-            likedByCurrentUser={p.isLikedByCurrentUser}
-            onToggleLike={() => onToggleLike(p.id)} 
+            likes={likes}
+            likedByCurrentUser={likedByCurrentUser}
+            onToggleLike={() => onToggleLike(p.id)}
           />
         );
       })}
-
-      {!posts.length && <p className="empty-feed">No posts yet.</p>}
+      {!posts.length && <p>No posts yet.</p>}
     </div>
   );
 }
