@@ -31,6 +31,11 @@ export default function PostDetail({ post, likesMap, onToggleLike }: PostDetailP
 
       <div className="post-details-content">
         {post.content}
+        {post.imageUrl && (
+          <div className="post-image-container">
+            <img src={post.imageUrl} alt="Post" className="post-image" />
+          </div>
+        )}
       </div>
 
       <div className="post-details-stats">

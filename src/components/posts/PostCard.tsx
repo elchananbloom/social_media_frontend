@@ -43,6 +43,11 @@ export default function PostCard({
 
       <div className="post-body">
         <p className="post-content">{post.content}</p>
+        {post.imageUrl && (
+          <div className="post-image-container">
+            <img src={post.imageUrl} alt="Post" className="post-image" />
+          </div>
+        )}
       </div>
 
       <div className="post-actions">

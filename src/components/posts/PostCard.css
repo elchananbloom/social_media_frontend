@@ -95,3 +95,15 @@
     color: var(--error-color);
     background-color: rgba(224, 36, 94, 0.1);
 }
+
+.post-image-container {
+    margin-top: 12px;
+    max-width: 100%;
+}
+
+.post-image {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 16px;
+    object-fit: cover;
+}
