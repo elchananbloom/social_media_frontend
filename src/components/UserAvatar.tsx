@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./UserAvatar.css";
 
 type UserAvatarProps = {
@@ -6,6 +7,7 @@ type UserAvatarProps = {
     profilePictureUrl?: string | null;
     size?: "small" | "medium" | "large";
     className?: string;
+    disableNavigation?: boolean;
 };
 
 export default function UserAvatar({
@@ -13,14 +15,23 @@ export default function UserAvatar({
     profilePictureUrl,
     size = "medium",
     className = "",
+    disableNavigation = false,
 }: Readonly<UserAvatarProps>) {
     const [imageError, setImageError] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         setImageError(false);
     }, [profilePictureUrl]);
 
-    const containerClass = `user-avatar-container user-avatar-${size} ${className}`;
+    const handleClick = (e: React.MouseEvent) => {
+        if (!disableNavigation) {
+            e.stopPropagation();
+            navigate(`/profile/${username}`);
+        }
+    };
+
+    const containerClass = `user-avatar-container user-avatar-${size} ${!disableNavigation ? 'clickable' : ''} ${className}`;
 
     const getColor = (str: string) => {
         let hash = 0;
@@ -38,7 +49,11 @@ export default function UserAvatar({
         : {};
 
     return (
-        <div className={containerClass}>
+        <div
+            className={containerClass}
+            onClick={handleClick}
+            style={{ cursor: disableNavigation ? 'default' : 'pointer' }}
+        >
             {showImage ? (
                 <img
                     src={profilePictureUrl}

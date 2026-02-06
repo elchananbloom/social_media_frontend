@@ -1,4 +1,5 @@
 import { useEffect, useState, RefObject } from "react";
+import { useNavigate } from "react-router-dom";
 import { CommentResponse } from "../../utils/types";
 import { addComment, listComments } from "../../utils/PostApi";
 import { useAuth } from "../../hooks/useAuth";
@@ -17,6 +18,7 @@ export default function CommentsPanel({
   onCommentCreated,
 }: CommentsPanelProps) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [content, setContent] = useState("");
 
@@ -96,7 +98,13 @@ export default function CommentsPanel({
               <UserAvatar username={c.authorUsername} profilePictureUrl={c.authorProfilePictureUrl} size="small" />
               <div>
                 <div className="comment-header">
-                  <span className="comment-author">@{c.authorUsername}</span>
+                  <span
+                    className="comment-author"
+                    onClick={() => navigate(`/profile/${c.authorUsername}`)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    @{c.authorUsername}
+                  </span>
                   <span className="comment-meta">· {new Date(c.createdAt).toLocaleString()}</span>
                 </div>
                 <div className="comment-content">{c.content}</div>
