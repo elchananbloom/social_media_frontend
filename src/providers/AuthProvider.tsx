@@ -3,12 +3,12 @@ import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContextValue, User } from '../utils/types';
-import base_url from '../utils/url';
+import { AUTH_SERVICE_BASE_URL, PROFILE_SERVICE_BASE_URL } from '../utils/url';
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
 
 // configure axios base URL for API calls
-axios.defaults.baseURL = `${base_url}/api`;
+axios.defaults.baseURL = `${AUTH_SERVICE_BASE_URL}/api`;
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(() => {
@@ -30,7 +30,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
     const signup = async (username: string, email: string, password: string) => {
         try {
-            const response = await axios.post('http://localhost:9000/api/users/register', { username, email, password });
+            const response = await axios.post(`${AUTH_SERVICE_BASE_URL}/api/users/register`, { username, email, password });
             console.log("Registration successful:", response.data);
 
             // Redirect to login page after successful signup
@@ -49,18 +49,18 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         try {
             const response = await axios.post('/users/login', { username: name, password });
             const raw = response.data;
-    const token =
-      raw?.token ||
-      raw?.accessToken ||
-      raw?.access_token ||
-      (typeof raw === "string" ? raw : null);
+            const token =
+                raw?.token ||
+                raw?.accessToken ||
+                raw?.access_token ||
+                (typeof raw === "string" ? raw : null);
 
-    console.log("login response:", raw);
-    console.log("token extracted:", token);
+            console.log("login response:", raw);
+            console.log("token extracted:", token);
 
-    if (!token || typeof token !== "string") {
-      throw new Error("Login succeeded but no token string was returned");
-    }
+            if (!token || typeof token !== "string") {
+                throw new Error("Login succeeded but no token string was returned");
+            }
             if (token) {
                 localStorage.setItem('token', token);
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -71,7 +71,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
             // Check if user has a profile
             try {
-                const profileResponse = await axios.get(`http://localhost:8082/profiles/${name}`, {
+                const profileResponse = await axios.get(`${PROFILE_SERVICE_BASE_URL}/profiles/${name}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

@@ -10,6 +10,7 @@ import { getLikesCountByUser, getLikesForPost, likePost, unlikePost } from "../a
 import { listPosts, deletePost } from "../utils/PostApi";
 import PostList from "./posts/PostList";
 import { PostResponse } from "../utils/types";
+import { PROFILE_SERVICE_BASE_URL } from "../utils/url";
 
 
 const ProfilePage = () => {
@@ -153,8 +154,7 @@ const ProfilePage = () => {
         return;
       }
       try {
-        const base_url = "http://localhost:8084";
-        const response = await axios.get(`${base_url}/profiles/${usernameToFetch}`,
+        const response = await axios.get(`${PROFILE_SERVICE_BASE_URL}/profiles/${usernameToFetch}`,
           {
             headers: {
               "Content-Type": "application/json",

@@ -1,6 +1,7 @@
 import axios from "axios";
+import { SOCIAL_SERVICE_BASE_URL } from "../utils/url";
 
-const BASE_URL = "http://localhost:9100/api/social"; // adjust to your Social service port
+const BASE_URL = `${SOCIAL_SERVICE_BASE_URL}/api/social`;
 
 // Follow user
 export const followUser = async (followeeUsername: string): Promise<void> => {

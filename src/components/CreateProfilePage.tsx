@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import axios from "axios";
+import { PROFILE_SERVICE_BASE_URL } from "../utils/url";
 import "./CreateProfilePage.css";
 
 const CreateProfilePage = () => {
@@ -36,9 +37,7 @@ const CreateProfilePage = () => {
         setError("");
 
         try {
-            const base_url = "http://localhost:8084";
             const token = localStorage.getItem('token');
-
             const submitData = {
                 username: formData.username,
                 displayName: formData.displayName || formData.username,
@@ -50,8 +49,7 @@ const CreateProfilePage = () => {
                 profilePictureUrl: formData.profilePictureUrl,
                 secondaryImageUrl: formData.secondaryImageUrl,
             };
-
-            const response = await axios.post(`${base_url}/profiles`, submitData, {
+            const response = await axios.post(`${PROFILE_SERVICE_BASE_URL}/profiles`, submitData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`

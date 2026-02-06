@@ -5,6 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import UserAvatar from "./UserAvatar";
 import axios from "axios";
 import { Profile } from "../utils/types";
+import { PROFILE_SERVICE_BASE_URL } from "../utils/url";
 import "./FollowList.css";
 
 const FollowList = () => {
@@ -31,8 +32,7 @@ const FollowList = () => {
                 const profiles = await Promise.all(
                     usernames.map(async (uname) => {
                         try {
-                            const base_url = "http://localhost:8084";
-                            const response = await axios.get(`${base_url}/profiles/${uname}`, {
+                            const response = await axios.get(`${PROFILE_SERVICE_BASE_URL}/profiles/${uname}`, {
                                 headers: {
                                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                                 },

@@ -1,6 +1,7 @@
 
-const base_url_auth: string = "http://localhost:9000";
-export default base_url_auth;
+export const AUTH_SERVICE_BASE_URL = "http://localhost:9000";
+export const POST_SERVICE_BASE_URL = "http://localhost:8082";
+export const SOCIAL_SERVICE_BASE_URL = "http://localhost:9100";
+export const PROFILE_SERVICE_BASE_URL = "http://localhost:8084";
 
-export const POST_SERVICE_BASE_URL =
-  process.env.REACT_APP_POST_SERVICE_URL || "http://localhost:8082";
+export default AUTH_SERVICE_BASE_URL;

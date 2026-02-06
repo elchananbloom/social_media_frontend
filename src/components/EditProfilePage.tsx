@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useEffect, useState } from "react";
 import { Profile } from "../utils/types";
 import axios from "axios";
+import { PROFILE_SERVICE_BASE_URL } from "../utils/url";
 import "./EditProfilePage.css";
 
 
@@ -36,9 +37,8 @@ const EditProfilePage = () => {
                 return;
             }
             try {
-                const base_url = "http://localhost:8084";
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`${base_url}/profiles/${user.username}`, {
+                const response = await axios.get(`${PROFILE_SERVICE_BASE_URL}/profiles/${user.username}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -81,7 +81,6 @@ const EditProfilePage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const base_url = "http://localhost:8084";
             const token = localStorage.getItem('token');
             console.log(token);
             const submitData = {
@@ -96,7 +95,7 @@ const EditProfilePage = () => {
                 profilePictureUrl: formData.profilePictureUrl,
                 secondaryImageUrl: formData.secondaryImageUrl,
             };
-            const response = await axios.put(`${base_url}/profiles/${profile?.id}`, submitData,
+            const response = await axios.put(`${PROFILE_SERVICE_BASE_URL}/profiles/${profile?.id}`, submitData,
                 {
                     headers: {
                         'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import axios from "axios";
+import { SOCIAL_SERVICE_BASE_URL } from "../utils/url";
 
-const BASE_URL = "http://localhost:9100/api/social"; // Social service port
+const BASE_URL = `${SOCIAL_SERVICE_BASE_URL}/api/social`;
 
 export interface Like {
   id: number;
