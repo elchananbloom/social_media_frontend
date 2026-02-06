@@ -12,6 +12,7 @@ import CreateProfilePage from './components/CreateProfilePage';
 import PostPage from "./pages/PostPage";
 import Navbar from './components/Navbar';
 import PostDetailPage from "./pages/PostDetailPage";
+import FollowList from './components/FollowList';
 
 function App() {
   return (
@@ -27,16 +28,12 @@ function App() {
             <Route path="/" element={<PostPage />} />
             <Route path="/create-profile" element={<CreateProfilePage />} />
             <Route path="/posts/:id" element={<PostDetailPage />} />
-            <Route path="/create-post" element={<h1>Create Post Page - Protected</h1>} />
-            <Route path="/edit-post/:id" element={<h1>Edit Post Page - Protected</h1>} />
             <Route path='/profile'>
               <Route path='me' element={<ProfilePage />} />
               <Route path='me/edit' element={<EditProfilePage />} />
-              <Route path='me/followers' element={<h1>My Followers Page - Protected</h1>} />
-              <Route path='me/following' element={<h1>My Following Page - Protected</h1>} />
+              <Route path='me/:type' element={<FollowList />} />
               <Route path=':username' element={<ProfilePage />} />
-              <Route path=':username/followers' element={<h1>Other User Followers Page - Protected</h1>} />
-              <Route path=':username/following' element={<h1>Other User Following Page - Protected</h1>} />
+              <Route path=':username/:type' element={<FollowList />} />
             </Route>
           </Route>
           {/* default / unknown -> show login first */}

@@ -258,11 +258,19 @@ const ProfilePage = () => {
               </div>
             )}
             <div className="profile-stats">
-              <div className="profile-stat-item">
+              <div
+                className="profile-stat-item clickable"
+                onClick={() => navigate(`/profile/${username || 'me'}/following`)}
+                style={{ cursor: "pointer" }}
+              >
                 <span className="stat-value">{following.length}</span>
                 <span className="stat-label">Following</span>
               </div>
-              <div className="profile-stat-item">
+              <div
+                className="profile-stat-item clickable"
+                onClick={() => navigate(`/profile/${username || 'me'}/followers`)}
+                style={{ cursor: "pointer" }}
+              >
                 <span className="stat-value">{followers.length}</span>
                 <span className="stat-label">Followers</span>
               </div>
