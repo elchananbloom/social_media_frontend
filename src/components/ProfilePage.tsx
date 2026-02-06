@@ -6,7 +6,10 @@ import axios from "axios";
 import UserAvatar from "./UserAvatar";
 import "./ProfilePage.css";
 import { getFollowers, getFollowing, followUser, unfollowUser, } from "../api/followApi";
-import { getLikesCountByUser } from "../api/likesApi";
+import { getLikesCountByUser, getLikesForPost, likePost, unlikePost } from "../api/likesApi";
+import { listPosts, deletePost } from "../utils/PostApi";
+import PostList from "./posts/PostList";
+import { PostResponse } from "../utils/types";
 
 
 const ProfilePage = () => {
@@ -20,6 +23,82 @@ const ProfilePage = () => {
   const [following, setFollowing] = useState<string[]>([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const [totalLikes, setTotalLikes] = useState<number>(0);
+  const [posts, setPosts] = useState<PostResponse[]>([]);
+  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [likesMap, setLikesMap] = useState<{
+    [postId: number]: { count: number; likedByCurrentUser: boolean };
+  }>({});
+
+  const fetchUserPosts = async () => {
+    const targetUsername = profile?.username || displayedUsername;
+    console.log("[ProfilePage] fetchUserPosts target:", targetUsername);
+    if (!targetUsername) return;
+    try {
+      setLoadingPosts(true);
+      const data = await listPosts({ authorUsernames: [targetUsername], limit: 50 });
+      setPosts(data);
+
+      const likesData = await Promise.all(
+        data.map(async (p) => {
+          const likes = await getLikesForPost(p.id);
+          return {
+            postId: p.id,
+            count: likes.length,
+            likedByCurrentUser: user?.username
+              ? likes.some((l) => l.username === user.username)
+              : false,
+          };
+        })
+      );
+
+      const newLikesMap: typeof likesMap = {};
+      likesData.forEach((l) => {
+        newLikesMap[l.postId] = { count: l.count, likedByCurrentUser: l.likedByCurrentUser };
+      });
+      setLikesMap(newLikesMap);
+    } catch (err) {
+      console.error("ProfilePage Failed to fetch user posts:", err);
+    } finally {
+      setLoadingPosts(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deletePost(id);
+      setPosts((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const toggleLike = async (postId: number) => {
+    if (!user) return;
+    const current = likesMap[postId];
+    if (!current) return;
+    try {
+      if (current.likedByCurrentUser) {
+        await unlikePost(postId, user.username);
+      } else {
+        await likePost(postId, user.username);
+      }
+      setLikesMap((prev) => ({
+        ...prev,
+        [postId]: {
+          count: current.likedByCurrentUser ? current.count - 1 : current.count + 1,
+          likedByCurrentUser: !current.likedByCurrentUser,
+        },
+      }));
+    } catch (err) {
+      console.error("Failed to toggle like", err);
+    }
+  };
+
+  useEffect(() => {
+    if (displayedUsername || profile?.username) {
+      fetchUserPosts();
+    }
+  }, [displayedUsername, profile?.username, user?.username]);
 
   const handleFollowToggle = async () => {
     if (!user || !displayedUsername || user.username === displayedUsername) return;
@@ -59,7 +138,7 @@ const ProfilePage = () => {
     console.log("ProfilePage mounted with username param:", username);
     // Fetch profile data based on the id from params
     const fetchProfile = async () => {
-      console.log("Fetching profile for username:", user);
+      console.log("Fetching profile for username:", user?.username);
       let usernameToFetch = username;
 
       // Handle /profile/me route (username is undefined) or explicit 'me' parameter
@@ -160,8 +239,20 @@ const ProfilePage = () => {
               )}
             </div>
             {user?.username !== displayedUsername && (
-              <div>
-                <button onClick={handleFollowToggle}>
+              <div style={{ marginTop: 12 }}>
+                <button
+                  onClick={handleFollowToggle}
+                  className={isFollowing ? "unfollow-button" : "follow-button"}
+                  style={{
+                    backgroundColor: isFollowing ? "white" : "black",
+                    color: isFollowing ? "black" : "white",
+                    border: isFollowing ? "1px solid var(--border-color)" : "none",
+                    borderRadius: "9999px",
+                    padding: "8px 16px",
+                    fontWeight: "bold",
+                    cursor: "pointer"
+                  }}
+                >
                   {isFollowing ? "Unfollow" : "Follow"}
                 </button>
               </div>
@@ -189,6 +280,27 @@ const ProfilePage = () => {
             <div>
               <p className="not-found-text">It looks like you haven't created your profile yet.</p>
               <button onClick={() => navigate("/create-profile")} className="create-profile-button">Create Profile</button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {displayedUsername && (
+        <div className="profile-posts-section">
+          <h2 className="profile-section-title">Posts</h2>
+          {loadingPosts ? (
+            <p className="profile-posts-loading">Loading posts...</p>
+          ) : (
+            <div style={{ padding: "0 16px" }}>
+              <PostList
+                posts={posts}
+                selectedPostId={null}
+                onSelect={() => { }}
+                onDelete={handleDelete}
+                currentUsername={user?.username ?? null}
+                likesMap={likesMap}
+                onToggleLike={toggleLike}
+              />
             </div>
           )}
         </div>

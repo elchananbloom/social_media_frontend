@@ -1,19 +1,41 @@
-.post-list-container {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.post-list-header {
-    font-size: 20px;
-    font-weight: 800;
-    margin-bottom: 20px;
+.feed-tabs {
+    display: flex;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-.empty-feed {
+.feed-tab {
+    flex: 1;
     text-align: center;
+    padding: 16px;
+    cursor: pointer;
+    font-weight: 500;
     color: var(--secondary-text);
-    padding: 40px;
-    font-size: 16px;
+    transition: background-color 0.2s;
+    position: relative;
+}
+
+.feed-tab:hover {
+    background-color: var(--bg-hover);
+}
+
+.feed-tab.active {
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.feed-tab.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56px;
+    height: 4px;
+    background-color: var(--primary-color);
+    border-radius: 9999px;
 }
