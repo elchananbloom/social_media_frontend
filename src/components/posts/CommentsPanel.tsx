@@ -1,6 +1,7 @@
 import { useEffect, useState, RefObject } from "react";
 import { CommentResponse } from "../../utils/types";
 import { addComment, listComments } from "../../utils/PostApi";
+import { useAuth } from "../../hooks/useAuth";
 import UserAvatar from "../UserAvatar";
 import "./CommentsPanel.css";
 
@@ -15,9 +16,9 @@ export default function CommentsPanel({
   inputRef,
   onCommentCreated,
 }: CommentsPanelProps) {
+  const { user } = useAuth();
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [content, setContent] = useState("");
-  const [open, setOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [posting, setPosting] = useState(false);
@@ -37,9 +38,9 @@ export default function CommentsPanel({
   };
 
   useEffect(() => {
-    if (open) load();
+    load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, postId]);
+  }, [postId]);
 
   const submit = async () => {
     if (!content.trim()) return;
@@ -53,7 +54,6 @@ export default function CommentsPanel({
       setComments((prev) => [created, ...prev]);
 
       setContent("");
-      setOpen(true);
 
       await onCommentCreated?.(postId);
     } catch (e: any) {
@@ -66,6 +66,9 @@ export default function CommentsPanel({
   return (
     <div className="comments-panel">
       <div className="comment-input-container">
+        <div className="comment-input-avatar">
+          {user && <UserAvatar username={user.username} profilePictureUrl={user.profilePictureUrl} size="small" />}
+        </div>
         <input
           ref={inputRef}
           value={content}
@@ -80,34 +83,28 @@ export default function CommentsPanel({
 
       {error && <p className="comment-error">{error}</p>}
 
-      <button type="button" onClick={() => setOpen((v) => !v)} className="toggle-comments-button">
-        {open ? "Hide comments" : "Show comments"}
-      </button>
+      <div className="comments-list">
+        {loading && <p>Loading comments...</p>}
+        {!loading && comments.length === 0 && <p>No comments yet.</p>}
 
-      {open && (
-        <div className="comments-list">
-          {loading && <p>Loading comments...</p>}
-          {!loading && comments.length === 0 && <p>No comments yet.</p>}
-
-          {comments.map((c) => (
-            <div
-              key={c.id}
-              className="comment-item"
-            >
-              <div style={{ display: "flex", gap: "10px" }}>
-                <UserAvatar username={c.authorUsername} profilePictureUrl={c.authorProfilePictureUrl} size="small" />
-                <div>
-                  <div style={{ display: "flex", gap: "6px", alignItems: "baseline" }}>
-                    <span style={{ fontWeight: "bold", fontSize: "14px" }}>@{c.authorUsername}</span>
-                    <span className="comment-meta">· {new Date(c.createdAt).toLocaleString()}</span>
-                  </div>
-                  <div className="comment-content">{c.content}</div>
+        {comments.map((c) => (
+          <div
+            key={c.id}
+            className="comment-item"
+          >
+            <div className="comment-row">
+              <UserAvatar username={c.authorUsername} profilePictureUrl={c.authorProfilePictureUrl} size="small" />
+              <div>
+                <div className="comment-header">
+                  <span className="comment-author">@{c.authorUsername}</span>
+                  <span className="comment-meta">· {new Date(c.createdAt).toLocaleString()}</span>
                 </div>
+                <div className="comment-content">{c.content}</div>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

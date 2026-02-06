@@ -116,24 +116,21 @@ export default function PostPage() {
   };
 
   return (
-    <div style={{ maxWidth: 1000, margin: "24px auto", padding: 16 }}>
-      <h1>Posts</h1>
+    <div style={{ maxWidth: 600, margin: "24px auto", padding: 16 }}>
       <CreatePostForm onCreate={handleCreate} />
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
+      <div style={{ marginTop: 16 }}>
         <PostList
           posts={posts}
-          selectedPostId={selectedPostId}
-          onSelect={handleSelect}
+          selectedPostId={null} 
+          onSelect={(id) => { }}
           onDelete={handleDelete}
           currentUsername={currentUsername}
           likesMap={likesMap}
           onToggleLike={toggleLike}
         />
-
-        <PostDetail post={selectedPost} likesMap={likesMap} onToggleLike={toggleLike} />
       </div>
     </div>
   );

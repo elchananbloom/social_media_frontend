@@ -1,4 +1,6 @@
 import { PostResponse } from "../../utils/types";
+import UserAvatar from "../UserAvatar";
+import "./PostCard.css";
 
 type PostCardProps = {
   post: PostResponse;
@@ -8,6 +10,7 @@ type PostCardProps = {
   likes: number;
   likedByCurrentUser: boolean;
   onToggleLike: () => void;
+  onComment?: () => void;
 };
 
 export default function PostCard({
@@ -18,38 +21,64 @@ export default function PostCard({
   likes,
   likedByCurrentUser,
   onToggleLike,
+  onComment,
 }: Readonly<PostCardProps>) {
   return (
     <div
       onClick={onSelect}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onSelect(); }}
-      style={{
-        border: selected ? "2px solid #333" : "1px solid #ccc",
-        padding: 12,
-        borderRadius: 10,
-        marginBottom: 10,
-        cursor: "pointer",
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") onSelect();
       }}
+      className={`post-card ${selected ? "selected" : ""}`}
     >
-      <p style={{ marginTop: 0 }}>{post.content}</p>
-      <small style={{ color: "#666" }}>
-        {post.authorUsername} · {new Date(post.createdAt).toLocaleString()}
-      </small>
+      <div className="post-header">
+        <UserAvatar username={post.authorUsername} profilePictureUrl={post.authorProfilePictureUrl} />
+        <div className="post-header-info">
+          <span className="post-author">@{post.authorUsername}</span>
+          <span className="post-time">· {new Date(post.createdAt).toLocaleString()}</span>
+        </div>
+      </div>
 
-      <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
+      <div className="post-body">
+        <p className="post-content">{post.content}</p>
+      </div>
+
+      <div className="post-actions">
         <button
-          onClick={(e) => { e.stopPropagation(); onToggleLike(); }}
+          className="post-action-button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleLike();
+          }}
         >
           {likedByCurrentUser ? "❤️" : "🤍"} {likes}
         </button>
 
+        <button
+          type="button"
+          className="post-action-button comment"
+          onClick={(e) => {
+            if (onComment) {
+              e.stopPropagation();
+              onComment();
+            }
+          }}
+        >
+          💬 {post.commentCount ?? 0}
+        </button>
+
         {onDelete && (
           <button
-            onClick={(e) => { e.stopPropagation(); onDelete(); }}
+            type="button"
+            className="post-action-button delete"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
           >
-            Delete
+            🗑️ Delete
           </button>
         )}
       </div>

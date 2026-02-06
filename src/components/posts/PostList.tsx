@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import PostCard from "./PostCard";
 import { PostResponse } from "../../utils/types";
 
@@ -20,6 +21,7 @@ export default function PostList({
   likesMap,
   onToggleLike,
 }: Readonly<PostListProps>) {
+  const navigate = useNavigate();
   return (
     <div>
       {posts.map((p) => {
@@ -28,16 +30,17 @@ export default function PostList({
         const likedByCurrentUser = likesMap[p.id]?.likedByCurrentUser ?? false;
 
         return (
-          <PostCard
-            key={p.id}
-            post={p}
-            selected={p.id === selectedPostId}
-            onSelect={() => onSelect(p.id)}
-            onDelete={canDelete ? () => onDelete(p.id) : undefined}
-            likes={likes}
-            likedByCurrentUser={likedByCurrentUser}
-            onToggleLike={() => onToggleLike(p.id)}
-          />
+          <div key={p.id} onClick={() => navigate(`/posts/${p.id}`)} style={{ cursor: "pointer" }}>
+            <PostCard
+              post={p}
+              selected={false}
+              onSelect={() => { }}
+              onDelete={canDelete ? () => onDelete(p.id) : undefined}
+              likes={likes}
+              likedByCurrentUser={likedByCurrentUser}
+              onToggleLike={() => onToggleLike(p.id)}
+            />
+          </div>
         );
       })}
       {!posts.length && <p>No posts yet.</p>}

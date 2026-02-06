@@ -6,11 +6,25 @@
     margin-bottom: 20px;
 }
 
+.create-post-row {
+    display: flex;
+    gap: 12px;
+}
+
+.create-post-avatar {
+    flex-shrink: 0;
+    padding-top: 4px;
+}
+
+.create-post-content {
+    flex-grow: 1;
+}
+
 .create-post-textarea {
     width: 100%;
-    padding: 12px;
+    padding: 12px 0;
     border: none;
-    font-size: 18px;
+    font-size: 19px;
     font-family: inherit;
     resize: vertical;
     outline: none;

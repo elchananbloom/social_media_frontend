@@ -10,16 +10,15 @@ import Register from "./components/Register";
 import EditProfilePage from './components/EditProfilePage';
 import CreateProfilePage from './components/CreateProfilePage';
 import PostPage from "./pages/PostPage";
-import LogOut from './components/LogOut';
+import Navbar from './components/Navbar';
+import PostDetailPage from "./pages/PostDetailPage";
 
 function App() {
   return (
     //TODO: Stretch Goals: add routing to liked posts, a differnet feed (like mutual friends)
     <BrowserRouter>
       <AuthProvider>
-        <div className="app-navbar">
-          <LogOut />
-        </div>
+        <Navbar />
 
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -27,7 +26,7 @@ function App() {
           <Route element={<RequiredAuth />}>
             <Route path="/" element={<PostPage />} />
             <Route path="/create-profile" element={<CreateProfilePage />} />
-            <Route path="/posts/:id" element={<h1>Post Detail Page - Protected</h1>} />
+            <Route path="/posts/:id" element={<PostDetailPage />} />
             <Route path="/create-post" element={<h1>Create Post Page - Protected</h1>} />
             <Route path="/edit-post/:id" element={<h1>Edit Post Page - Protected</h1>} />
             <Route path='/profile'>

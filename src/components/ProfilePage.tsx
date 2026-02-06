@@ -5,8 +5,8 @@ import { Profile } from "../utils/types";
 import axios from "axios";
 import UserAvatar from "./UserAvatar";
 import "./ProfilePage.css";
-import { getFollowers, getFollowing, followUser, unfollowUser,} from "../api/followApi";
-import {getLikesCountByUser} from "../api/likesApi";
+import { getFollowers, getFollowing, followUser, unfollowUser, } from "../api/followApi";
+import { getLikesCountByUser } from "../api/likesApi";
 
 
 const ProfilePage = () => {
@@ -15,29 +15,29 @@ const ProfilePage = () => {
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [displayedUsername, setDisplayedUsername] = useState<string | undefined>(username);
+  const displayedUsername = (!username || username === 'me') ? user?.username : username;
   const [followers, setFollowers] = useState<string[]>([]);
   const [following, setFollowing] = useState<string[]>([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const [totalLikes, setTotalLikes] = useState<number>(0);
 
   const handleFollowToggle = async () => {
-        if (!user || !displayedUsername || user.username === displayedUsername) return;
+    if (!user || !displayedUsername || user.username === displayedUsername) return;
 
-        try {
-          if (isFollowing) {
-            await unfollowUser(displayedUsername);
-            setFollowers((prev) => prev.filter((f) => f !== user.username));
-          } else {
-            await followUser(displayedUsername);
-            setFollowers((prev) => [...prev, user.username]);
-          }
+    try {
+      if (isFollowing) {
+        await unfollowUser(displayedUsername);
+        setFollowers((prev) => prev.filter((f) => f !== user.username));
+      } else {
+        await followUser(displayedUsername);
+        setFollowers((prev) => [...prev, user.username]);
+      }
 
-          setIsFollowing(!isFollowing);
-        } catch (error) {
-            console.error("Error toggling follow:", error);
-        }
-    };
+      setIsFollowing(!isFollowing);
+    } catch (error) {
+      console.error("Error toggling follow:", error);
+    }
+  };
 
   useEffect(() => {
     if (!displayedUsername) return;
@@ -66,7 +66,6 @@ const ProfilePage = () => {
       if ((!username || username === 'me') && user) {
         console.log("Fetching profile for current user:", user.username);
         usernameToFetch = user.username;
-        setDisplayedUsername(user.username);
       }
 
       if (!usernameToFetch) {
@@ -151,7 +150,7 @@ const ProfilePage = () => {
                 <span className="profile-detail-item">📍 {profile.location}</span>
               )}
               {profile.birthdate && (
-                <span className="profile-detail-item">🎈 {profile.birthdate}</span>
+                <span className="profile-detail-item">🎈 {new Date(profile.birthdate).toLocaleDateString()}</span>
               )}
               {profile.gender && (
                 <span className="profile-detail-item">⚧ {profile.gender}</span>
@@ -161,15 +160,26 @@ const ProfilePage = () => {
               )}
             </div>
             {user?.username !== displayedUsername && (
-            <div>
-              <button onClick={handleFollowToggle}>
-                {isFollowing ? "Unfollow" : "Follow"}
-              </button>
-              <p>Followers: {followers.length}</p>
-              <p>Following: {following.length}</p>
-              <p>Total likes for this user:: {totalLikes}</p>
+              <div>
+                <button onClick={handleFollowToggle}>
+                  {isFollowing ? "Unfollow" : "Follow"}
+                </button>
+              </div>
+            )}
+            <div className="profile-stats">
+              <div className="profile-stat-item">
+                <span className="stat-value">{following.length}</span>
+                <span className="stat-label">Following</span>
+              </div>
+              <div className="profile-stat-item">
+                <span className="stat-value">{followers.length}</span>
+                <span className="stat-label">Followers</span>
+              </div>
+              <div className="profile-stat-item">
+                <span className="stat-value">{totalLikes}</span>
+                <span className="stat-label">Likes</span>
+              </div>
             </div>
-          )}
           </div>
         </div>
       ) : (

@@ -1,0 +1,129 @@
+.navbar {
+    background-color: white;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 0 16px;
+    height: 53px;
+    display: flex;
+    justify-content: center;
+}
+
+.navbar-content {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 100%;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--secondary-text);
+    font-weight: bold;
+    font-size: 19px;
+    height: 100%;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+    background-color: var(--bg-hover);
+    border-radius: 9999px;
+    padding: 8px 16px;
+    margin: -8px -16px;
+}
+
+.nav-link.active {
+    color: var(--primary-color);
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 4px;
+    background-color: var(--primary-color);
+    border-radius: 2px 2px 0 0;
+}
+
+.nav-link.active:hover {
+    background-color: var(--bg-hover);
+}
+
+.nav-text {
+    display: block;
+}
+
+.nav-icon {
+    font-size: 20px;
+}
+
+.nav-logout-button {
+    background: none;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 15px;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+}
+
+.nav-logout-button:hover {
+    background-color: var(--bg-hover);
+}
+
+@media (max-width: 600px) {
+    .nav-text {
+        display: none;
+    }
+
+    .navbar-links {
+        gap: 24px;
+    }
+}
+
+.nav-search-form {
+    flex: 1;
+    max-width: 200px;
+    margin: 0 16px;
+}
+
+.nav-search-input {
+    width: 100%;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-hover);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.nav-search-input:focus {
+    background-color: white;
+    border-color: var(--primary-color);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+}

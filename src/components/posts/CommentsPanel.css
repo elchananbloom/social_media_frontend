@@ -4,8 +4,12 @@
 
 .comment-input-container {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
+}
+
+.comment-input-avatar {
+    flex-shrink: 0;
 }
 
 .comment-input {
@@ -88,4 +92,20 @@
 .comment-meta {
     color: var(--secondary-text);
     font-size: 13px;
+}
+
+.comment-row {
+    display: flex;
+    gap: 10px;
+}
+
+.comment-header {
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+}
+
+.comment-author {
+    font-weight: bold;
+    font-size: 14px;
 }
