@@ -44,7 +44,7 @@ export default function Login() {
 
     return (
         <div className="login-container">
-            <h2 className="login-title">Sign in to Twitter</h2>
+            <h2 className="login-title">Sign in to BloomBoyz</h2>
             <form onSubmit={formik.handleSubmit} noValidate className="login-form">
                 <div className="form-group">
                     <label className="form-label">Username</label>

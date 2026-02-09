@@ -48,7 +48,7 @@ export default function Register() {
 
     return (
         <div className="register-container">
-            <h2 className="register-title">Sign up for Twitter</h2>
+            <h2 className="register-title">Sign up for BloomBoyz</h2>
             <form onSubmit={formik.handleSubmit} noValidate className="register-form">
                 <div className="form-group">
                     <label className="form-label">Username</label>
