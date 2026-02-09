@@ -2,7 +2,28 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+ <img src="images/BackEndBoyz-5.jpeg" style="max-width:800px;height:auto;" alt="BackEndBoyz 5">
+
+# Fun little group social media app saja boyz themed 
+
+A small responsive gallery of the project images:
+
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;">
+  <img src="images/BackEndBoyz-1.jpeg" style="max-width:200px;height:auto;" alt="BackEndBoyz 1">
+  <img src="images/BackEndBoyz-2.jpeg" style="max-width:200px;height:auto;" alt="BackEndBoyz 2">
+  <img src="images/BackEndBoyz-3.jpeg" style="max-width:200px;height:auto;" alt="BackEndBoyz 3">
+  <img src="images/BackEndBoyz-4.jpeg" style="max-width:200px;height:auto;" alt="BackEndBoyz 4">
+  <img src="images/BackEndBoyz-5.jpeg" style="max-width:200px;height:auto;" alt="BackEndBoyz 5">
+  <img src="images/BackEndBoyz-6.jpeg" style="max-width:200px;height:auto;" alt="BackEndBoyz 6">
+  <img src="images/BackEndBoyz-7.jpeg" style="max-width:200px;height:auto;" alt="BackEndBoyz 7">
+  <img src="images/BackEndBoyz-8.jpeg" style="max-width:200px;height:auto;" alt="BackEndBoyz 8">
+</div>
+
+
 ## Available Scripts
+
+
+
 
 In the project directory, you can run:
 
@@ -44,3 +65,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Gallery
+
+
